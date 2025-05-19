@@ -1,0 +1,105 @@
+.admin-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-content-container {
+    max-width: 1400px !important;
+    width: 95% !important;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+/* Đảm bảo footer luôn nằm sát dưới */
+.footer {
+    background: #f8f9fa;
+    padding: 10px 0;
+    width: 100%;
+    margin-top: auto; /* Đẩy footer xuống dưới */
+}
+
+.stat-table,
+.content-table {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.stat-table th,
+.content-table th {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.stat-table td,
+.content-table td {
+    color: #333;
+    vertical-align: middle;
+}
+
+.content-table .btn {
+    padding: 0.375rem 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+}
+
+/* Ensure table is responsive */
+.content-table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 800px;
+}
+
+/* Make sure the table container allows horizontal scrolling if needed */
+.card-body {
+    overflow-x: auto;
+}
+
+/* Ensure text doesn't overflow */
+.content-table td {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.stat-table tbody tr:nth-child(1) td {
+    font-size: 24px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.stat-table tbody tr:nth-child(2) td {
+    color: #666;
+}
+
+.navbar {
+    padding: 15px 0;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.nav-items {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.nav-link {
+    color: #fff !important;
+    margin: 0 15px;
+}
+
+.nav-link:hover {
+    color: #ddd !important;
+}

@@ -1,0 +1,55 @@
+[{
+  "_id": {
+    "$oid": "67f954c93021374299a355dc"
+  },
+  "content": "wào",
+  "userId": "67f8c5c374895a2f413c12b2",
+  "createdAt": {
+    "$date": "2025-04-11T17:43:37.016Z"
+  },
+  "images": [
+    "/uploads/2b5aa9df-0857-4384-b301-cf6cb43d1a97.jpg"
+  ],
+  "videos": [],
+  "likes": [
+    "67f92d516b98873714dca916"
+  ],
+  "comments": [
+    {
+      "userId": "67f92d516b98873714dca916",
+      "content": "ghê",
+      "createdAt": {
+        "$date": "2025-04-11T17:43:49.528Z"
+      }
+    }
+  ],
+  "isShared": false,
+  "_class": "com.example.facebook_clone.model.Post"
+},
+{
+  "_id": {
+    "$oid": "67f954e53021374299a355dd"
+  },
+  "content": ":3",
+  "userId": "67f92d516b98873714dca916",
+  "createdAt": {
+    "$date": "2025-04-11T17:44:05.793Z"
+  },
+  "images": [],
+  "videos": [],
+  "likes": [
+    "67f92d516b98873714dca916"
+  ],
+  "comments": [
+    {
+      "userId": "67f92d516b98873714dca916",
+      "content": "ghê chưa",
+      "createdAt": {
+        "$date": "2025-04-11T17:44:17.940Z"
+      }
+    }
+  ],
+  "isShared": true,
+  "originalPostId": "67f954c93021374299a355dc",
+  "_class": "com.example.facebook_clone.model.Post"
+}]

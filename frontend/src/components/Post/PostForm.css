@@ -1,0 +1,254 @@
+/* PostForm.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+
+.card {
+  max-width: 600px;
+  margin: 0 auto 20px;
+}
+
+.card-body {
+  padding: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.post-input {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  padding: 10px 15px;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+.action-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.post-button {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 16px;
+  width: 100%;
+}
+
+.privacy-selector {
+  min-width: 120px;
+  max-width: 180px;
+  position: relative;
+  z-index: 100;
+}
+
+.privacy-selector .form-select {
+  font-size: 14px;
+  padding: 4px 12px 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  /* Sử dụng mũi tên mặc định của trình duyệt */
+}
+
+/* Fix dropdown display issues */
+.form-select option {
+  background-color: white;
+  color: #333;
+  padding: 8px;
+}
+
+.form-select:focus {
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  border-color: #86b7fe;
+}
+
+.btn-outline-secondary.btn-sm {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+.media-grid {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.media-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+}
+
+.media-item img,
+.media-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Grid layouts based on number of items */
+.media-grid[data-count="1"] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.media-grid[data-count="2"] {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+}
+
+.media-grid[data-count="3"] {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 2fr 1fr;
+}
+
+.media-grid[data-count="3"] .media-item:first-child {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.media-grid[data-count="4"] {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.media-grid[data-count="5"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.media-grid[data-count="5"] .media-item:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.media-grid[data-count="6"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+}
+
+.media-grid[data-count="7"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.media-grid[data-count="7"] .media-item:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.media-grid[data-count="8"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.media-grid[data-count="9"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.media-grid[data-count="10"] {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.media-grid[data-count="10"] .media-item:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Set aspect ratio for grid items */
+.media-grid[data-count="1"] .media-item {
+  aspect-ratio: 16/9;
+}
+
+.media-grid[data-count="2"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="3"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="3"] .media-item:first-child {
+  aspect-ratio: 2/1;
+}
+
+.media-grid[data-count="4"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="5"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="5"] .media-item:first-child {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="6"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="7"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="7"] .media-item:first-child {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="8"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="9"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="10"] .media-item {
+  aspect-ratio: 1/1;
+}
+
+.media-grid[data-count="10"] .media-item:first-child {
+  aspect-ratio: 1/1;
+}
+
+/* Remove button styles */
+.media-item .btn-close,
+.media-item .btn-danger {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.media-item:hover .btn-close,
+.media-item:hover .btn-danger {
+  opacity: 1;
+}
+
+.media-item .btn-close:focus,
+.media-item .btn-danger:focus {
+  opacity: 1;
+  box-shadow: none;
+}
+
+.media-item .btn-danger.position-absolute {
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.media-item .btn-danger.position-absolute:hover {
+  opacity: 1;
+}

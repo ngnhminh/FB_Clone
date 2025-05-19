@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 import { useChat } from '../contexts/ChatContext';
 import { useNavigate } from 'react-router-dom';
-import './RightSidebar.css';
 
 /**
  * Component hiển thị danh sách bạn bè ở thanh bên phải
@@ -138,50 +137,48 @@ function RightSidebar() {
   };
 
   return (
-    <div className="col-3 position-fixed bg-white"
-         style={{ top: '60px', right: '0', height: 'calc(100vh - 60px)', overflowY: 'auto', borderLeft: '1px solid #e4e6eb' }}>
+    <div className="col-3 fixed top-16 right-0 h-[calc(100vh-60px)] overflow-y-auto">
       {/* Phần tiêu đề */}
-      <div className="px-3 py-2 border-bottom">
-        <div className="d-flex justify-content-between align-items-center">
-          <h6 className="text-muted fw-bold mb-0">Người liên hệ</h6>
-          <div className="d-flex gap-3">
-            <i className="bi bi-camera-video text-muted" aria-label="Tạo cuộc gọi video"></i>
-            <i className="bi bi-search text-muted" aria-label="Tìm kiếm bạn bè"></i>
-            <i className="bi bi-three-dots text-muted" aria-label="Tùy chọn"></i>
+      <div className="px-3 pt-3 py-2 border-b border-gray-200">
+        <div className="flex justify-between items-center">
+          <h6 className="text-gray-500 font-semibold m-0">Người liên hệ</h6>
+          <div className="flex gap-3">
+            <i className="bi bi-camera-video text-gray-500 hover:text-gray-700 cursor-pointer" aria-label="Tạo cuộc gọi video"></i>
+            <i className="bi bi-search text-gray-500 hover:text-gray-700 cursor-pointer" aria-label="Tìm kiếm bạn bè"></i>
+            <i className="bi bi-three-dots text-gray-500 hover:text-gray-700 cursor-pointer" aria-label="Tùy chọn"></i>
           </div>
         </div>
-        {loading && <div className="spinner-border spinner-border-sm text-primary mt-2" role="status">
-          <span className="visually-hidden">Đang tải...</span>
-        </div>}
+        {loading && (
+          <div className="mt-2">
+            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        )}
       </div>
 
       {/* Danh sách bạn bè */}
-      <div className="friends-list">
+      <div className="max-h-[calc(100vh-110px)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         {loading ? (
           <div className="text-center p-4">
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Đang tải...</span>
-            </div>
-            <p className="mt-2 text-muted">Đang tải danh sách bạn bè...</p>
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <p className="mt-2 text-gray-500">Đang tải danh sách bạn bè...</p>
           </div>
         ) : Array.isArray(friends) && friends.length > 0 ? (
-          <ul className="list-unstyled mb-0">
+          <ul className="m-0 p-0">
             {friends.map(friend => (
               <li
                 key={friend.id || Math.random()}
-                className="px-2 py-2 mx-1 my-1 d-flex align-items-center justify-content-between rounded-3 contact-item"
+                className="px-2 py-2 mx-1 my-1 flex items-center justify-between rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 onClick={() => openChat(friend)}
                 aria-label={`Bắt đầu trò chuyện với ${friend.firstName || ''} ${friend.lastName || ''}`}
                 role="button"
                 tabIndex="0"
               >
-                <div className="d-flex align-items-center gap-2">
-                  <div className="position-relative" title="Click để xem hồ sơ">
+                <div className="flex items-center gap-2">
+                  <div className="relative group" title="Click để xem hồ sơ">
                     <img
                       src={getFullImageUrl(friend.avatar)}
                       alt={`Ảnh đại diện của ${friend.firstName || ''} ${friend.lastName || ''}`}
-                      className="rounded-circle avatar-clickable"
-                      style={{ width: '36px', height: '36px', objectFit: 'cover', cursor: 'pointer' }}
+                      className="w-9 h-9 rounded-full object-cover cursor-pointer transition-transform duration-200 border-2 border-transparent group-hover:scale-110 group-hover:border-blue-500"
                       onClick={(e) => handleAvatarClick(friend.id, e)}
                       onError={(e) => {
                         e.target.src = '/default-imgs/avatar.png';
@@ -189,16 +186,18 @@ function RightSidebar() {
                     />
                     {/* Chỉ báo trạng thái online */}
                     <span
-                      className="position-absolute bg-success rounded-circle"
-                      style={{ width: '8px', height: '8px', bottom: '2px', right: '2px', border: '1px solid white' }}
+                      className="absolute w-2 h-2 bg-green-500 rounded-full bottom-0.5 right-0.5 border border-white"
                       aria-label="Đang hoạt động"
                     ></span>
                   </div>
-                  <span className="text-dark">{`${friend.firstName || ''} ${friend.lastName || ''}`}</span>
+                  <span className="text-gray-900">{`${friend.firstName || ''} ${friend.lastName || ''}`}</span>
                 </div>
                 {/* Hiển thị số tin nhắn chưa đọc */}
                 {unreadCounts[friend.id] > 0 && (
-                  <span className="badge rounded-pill bg-danger" aria-label={`${unreadCounts[friend.id]} tin nhắn chưa đọc`}>
+                  <span 
+                    className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full" 
+                    aria-label={`${unreadCounts[friend.id]} tin nhắn chưa đọc`}
+                  >
                     {unreadCounts[friend.id]}
                   </span>
                 )}
@@ -206,37 +205,17 @@ function RightSidebar() {
             ))}
           </ul>
         ) : (
-          <div className="text-center text-muted p-3">
-            <i className="bi bi-people fs-1 mb-2 d-block"></i>
+          <div className="text-center text-gray-500 p-3">
+            <i className="bi bi-people text-4xl mb-2 block"></i>
             <p>Chưa có bạn bè nào</p>
-            <small className="d-block mt-2">Hãy gửi lời mời kết bạn để bắt đầu kết nối</small>
+            <small className="block mt-2">Hãy gửi lời mời kết bạn để bắt đầu kết nối</small>
           </div>
         )}
       </div>
-
-      {/* CSS tùy chỉnh */}
-      <style jsx="true">{`
-        .contact-item:hover {
-          background-color: #f0f2f5;
-          cursor: pointer;
-        }
-        .friends-list {
-          max-height: calc(100vh - 110px);
-          overflow-y: auto;
-        }
-        .friends-list::-webkit-scrollbar {
-          width: 8px;
-        }
-        .friends-list::-webkit-scrollbar-thumb {
-          background-color: #c2c2c2;
-          border-radius: 10px;
-        }
-        .friends-list::-webkit-scrollbar-track {
-          background-color: transparent;
-        }
-      `}</style>
     </div>
   );
 }
 
 export default RightSidebar;
+
+

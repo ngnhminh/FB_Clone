@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import './Profile.css';
 import { useUser } from '../../contexts/UserContext';
 import { API_ENDPOINTS } from '../../config/api';
 import PostForm from '../../components/Post/PostForm';
@@ -7,6 +6,7 @@ import PostList from '../../components/Post/PostList';
 import { useParams } from 'react-router-dom';
 import { useToast } from '../../context/ToastContext';
 import EditProfileModal from '../../components/Profile/EditProfileModal';
+import ProfileLeftSide from '../../components/Profile/ProfileLeftSide';
 
 /**
  * Trang hồ sơ người dùng
@@ -193,13 +193,13 @@ function Profile() {
   const coverUrl = profileData?.coverPhoto ? getFullImageUrl(profileData.coverPhoto) : '/default-imgs/cover.jpg';
 
   return (
-    <div className="profile-container" style={{ marginTop: '62px' }}>
+    <div className="profile-container bg-gray-100" style={{ marginTop: '62px' }}>
       {/* Phần ảnh bìa */}
-      <div className="cover-photo-section">
+      <div className="cover-photo-section relative h-[300px] bg-[#e9ecef] rounded-b-[10px] overflow-hidden">
         <img
           src={coverUrl}
           alt="Ảnh bìa"
-          className="cover-photo"
+          className="cover-photo w-full h-full object-cover object-center"
           onError={(e) => {
             e.target.src = '/default-imgs/cover.jpg';
           }}
@@ -208,24 +208,24 @@ function Profile() {
       </div>
 
       {/* Phần thông tin hồ sơ */}
-      <div className="profile-header">
-        <div className="avatar-section">
+      <div className="profile-header flex items-end relative -top-20 px-5">
+        <div className="avatar-section relative flex flex-col items-center">
           <img
             src={avatarUrl}
             alt="Ảnh đại diện"
-            className="avatar"
+            className="avatar w-40 h-40 rounded-full object-cover"
             onError={(e) => {
               e.target.src = '/default-imgs/avatar.png';
             }}
             key={`avatar-${imageVersion}`}
           />
         </div>
-        <div className="profile-info" style={{ marginTop: '86px' }}>
-          <h1 className="profile-name">{fullName}</h1>
-          <p className="profile-bio">{bio}</p>
+        <div className="profile-info ml-5">
+          <h1 className="profile-name text-[28px] m-0 text-[#1c2526]">{fullName}</h1>
+          <p className="profile-bio text-base text-[#606770] my-1">{bio}</p>
           {isOwnProfile && (
             <button
-              className="edit-profile-button"
+              className="edit-profile-button bg-[#e7f3ff] text-[#1877f2] border-none px-4 py-2 rounded-xl cursor-pointer font-bold hover:bg-[#d8e8ff]"
               onClick={() => setShowEditModal(true)}
               aria-label="Chỉnh sửa hồ sơ"
             >
@@ -236,19 +236,23 @@ function Profile() {
       </div>
 
       {/* Phần nội dung hồ sơ */}
-      <div className="profile-content">
-        {/* Form tạo bài đăng mới (chỉ hiển thị trên hồ sơ của chính mình) */}
-        {isOwnProfile && <PostForm onAddPost={handleAddPost} />}
-        {/* Danh sách bài đăng */}
-        {posts.length > 0 ? (
-          <PostList
-            posts={posts}
-            setPosts={setPosts}
-            currentUser={currentUser}
-          />
-        ) : (
-          <p className="text-center mt-3">Chưa có bài đăng nào</p>
-        )}
+      <div className="profile-content relative -top-10 gap-4 flex max-w-6xl mx-auto">
+        <ProfileLeftSide />
+        <div className='grow pt-2'>
+          {/* Form tạo bài đăng mới (chỉ hiển thị trên hồ sơ của chính mình) */}
+          {isOwnProfile && <PostForm onAddPost={handleAddPost} />}
+          {/* Danh sách bài đăng */}
+          {posts.length > 0 ? (
+            <PostList
+              posts={posts}
+              setPosts={setPosts}
+              currentUser={currentUser}
+            />
+          ) : (
+            <p className="text-center mt-3">Chưa có bài đăng nào</p>
+          )}
+        </div>
+
       </div>
 
       {/* Modal chỉnh sửa hồ sơ */}

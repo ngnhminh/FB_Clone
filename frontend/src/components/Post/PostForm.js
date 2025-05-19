@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { API_ENDPOINTS } from '../../config/api';
-import './PostForm.css';
 import { useToast } from '../../context/ToastContext';
 
 /**
@@ -210,22 +209,21 @@ function PostForm({ onAddPost }) {
   };
 
   return (
-    <div className="card mb-3">
-      <div className="card-body">
+    <div className="bg-white rounded-lg shadow-sm mb-4">
+      <div className="p-4">
         {/* Phần nhập nội dung bài đăng */}
-        <div className="d-flex align-items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-3">
           <img
             src={getFullImageUrl(userProfile?.avatar)}
             alt="Ảnh đại diện"
-            className="rounded-circle"
-            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+            className="w-10 h-10 rounded-full object-cover"
             onError={(e) => {
               e.target.src = '/default-imgs/avatar.png';
             }}
           />
           <input
             type="text"
-            className="form-control rounded-pill post-input"
+            className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500"
             placeholder="Bạn đang nghĩ gì?"
             value={content}
             onChange={(e) => setContent(e.target.value)}
@@ -236,28 +234,25 @@ function PostForm({ onAddPost }) {
         {/* Hiển thị xem trước media đã chọn */}
         {mediaPreview.length > 0 && (
           <div className="mb-3">
-            <div className="media-grid mb-2" data-count={mediaPreview.length}>
+            <div className={`grid gap-2 ${mediaPreview.length > 1 ? 'grid-cols-2' : ''}`}>
               {mediaPreview.map((preview, index) => (
-                <div key={index} className="media-item position-relative">
+                <div key={index} className="relative group">
                   {media[index].type.includes('video') ? (
                     <video
                       src={preview}
                       controls
-                      className="img-fluid rounded"
-                      style={{ maxHeight: '300px', objectFit: 'cover' }}
+                      className="w-full h-[300px] object-cover rounded-lg"
                     />
                   ) : (
                     <img
                       src={preview}
                       alt={`Hình ảnh ${index + 1}`}
-                      className="img-fluid rounded"
-                      style={{ maxHeight: '300px', objectFit: 'cover' }}
+                      className="w-full h-[300px] object-cover rounded-lg"
                     />
                   )}
                   <button
                     type="button"
-                    className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                    style={{ width: '24px', height: '24px', padding: '0', lineHeight: '24px' }}
+                    className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
                     onClick={() => handleRemoveMedia(index)}
                     disabled={isLoading}
                     aria-label={`Xóa ${media[index].type.includes('video') ? 'video' : 'hình ảnh'} ${index + 1}`}
@@ -271,44 +266,44 @@ function PostForm({ onAddPost }) {
         )}
 
         {/* Các nút chức năng */}
-        <div className="d-flex justify-content-between mb-3">
+        <div className="flex justify-between mb-3">
           <button
-            className="btn btn-link text-secondary action-button"
+            className="flex items-center gap-1 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
             disabled={isLoading}
             aria-label="Tạo video trực tiếp"
           >
-            <img src="/img/icons/post-live.png" alt="Biểu tượng live" className="action-icon me-1" />
+            <img src="/img/icons/post-live.png" alt="Biểu tượng live" className="w-5 h-5" />
             Video trực tiếp
           </button>
-          <label htmlFor="media-upload" className="btn btn-link text-secondary action-button">
-            <img src="/img/icons/post-picture.png" alt="Biểu tượng ảnh/video" className="action-icon me-1" />
+          <label htmlFor="media-upload" className="flex items-center gap-1 text-gray-600 hover:text-gray-800 transition-colors cursor-pointer">
+            <img src="/img/icons/post-picture.png" alt="Biểu tượng ảnh/video" className="w-5 h-5" />
             Ảnh/Video
             <input
               id="media-upload"
               type="file"
               accept="image/*,video/*"
               onChange={handleMediaChange}
-              style={{ display: 'none' }}
+              className="hidden"
               disabled={isLoading}
               multiple
               aria-label="Thêm ảnh hoặc video"
             />
           </label>
           <button
-            className="btn btn-link text-secondary action-button"
+            className="flex items-center gap-1 text-gray-600 hover:text-gray-800 transition-colors disabled:opacity-50"
             disabled={isLoading}
             aria-label="Thêm cảm xúc hoặc hoạt động"
           >
-            <img src="/img/icons/post-feeling.png" alt="Biểu tượng cảm xúc" className="action-icon me-1" />
+            <img src="/img/icons/post-feeling.png" alt="Biểu tượng cảm xúc" className="w-5 h-5" />
             Cảm xúc/Hoạt động
           </button>
         </div>
 
         {/* Phần quyền riêng tư và nút đăng */}
-        <div className="d-flex justify-content-between align-items-center">
+        <div className="flex justify-between items-center">
           <div className="privacy-selector">
             <select
-              className="form-select form-select-sm"
+              className="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 disabled:opacity-50"
               value={privacy}
               onChange={(e) => setPrivacy(e.target.value)}
               disabled={isLoading}
@@ -319,11 +314,11 @@ function PostForm({ onAddPost }) {
             </select>
           </div>
 
-          <div className="d-flex gap-2">
+          <div className="flex gap-2">
             {/* Nút hủy chỉ hiển thị khi có nội dung hoặc media */}
             {(content.trim() || media.length > 0) && (
               <button
-                className="btn btn-outline-secondary btn-sm"
+                className="px-4 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
                 onClick={handleCancel}
                 disabled={isLoading}
                 aria-label="Hủy tạo bài đăng"
@@ -332,16 +327,16 @@ function PostForm({ onAddPost }) {
               </button>
             )}
             <button
-              className="btn btn-primary post-button"
+              className="px-4 py-1 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={handleSubmit}
               disabled={isLoading || (!content.trim() && media.length === 0)}
               aria-label="Đăng bài viết"
             >
               {isLoading ? (
-                <>
-                  <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                <div className="flex items-center gap-1">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Đang đăng...
-                </>
+                </div>
               ) : 'Đăng'}
             </button>
           </div>

@@ -42,29 +42,28 @@ const PostContent = memo(({ post, onImageClick }) => {
   };
 
   return (
-    <div className="post-content">
+    <div className="space-y-3">
       {isSharedPost && (
-        <div className="shared-comment mb-3">
+        <div className="text-gray-800">
           <p>{post.content}</p>
         </div>
       )}
 
       {isSharedPost && post.originalPost ? (
-        <div className="shared-post border rounded p-3">
-          <div className="d-flex align-items-center mb-2">
+        <div className="border border-gray-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 mb-2">
             <img
               src={getFullImageUrl(post.originalPost.user?.avatar)}
               alt={post.originalPost.user?.firstName || 'User'}
-              className="rounded-circle me-2"
-              style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+              className="w-8 h-8 rounded-full object-cover"
             />
             <div>
-              <div className="fw-bold">
+              <div className="font-semibold">
                 {post.originalPost.user
                   ? `${post.originalPost.user.firstName || ''} ${post.originalPost.user.lastName || ''}`
                   : 'Người dùng không xác định'}
               </div>
-              <div className="text-muted small">
+              <div className="text-sm text-gray-500">
                 {post.originalPost.createdAt
                   ? new Date(post.originalPost.createdAt).toLocaleString()
                   : ''}
@@ -72,25 +71,24 @@ const PostContent = memo(({ post, onImageClick }) => {
             </div>
           </div>
 
-          <div className="original-post-content">
-            <p>{post.originalPost.content}</p>
+          <div className="space-y-3">
+            <p className="text-gray-800">{post.originalPost.content}</p>
 
             {post.originalPost.images?.length > 0 && (
-              <div className="media-grid mb-3" data-count={post.originalPost.images.length}>
+              <div className={`grid gap-2 ${post.originalPost.images.length > 1 ? 'grid-cols-2' : ''}`}>
                 {post.originalPost.images.map((image, index) => (
                   <div
                     key={index}
-                    className="media-item"
+                    className="relative group cursor-pointer"
                     onClick={(e) => {
                       e.stopPropagation();
                       if (onImageClick) onImageClick(post.originalPost.images, index);
                     }}
-                    style={{ cursor: 'pointer' }}
                   >
                     <img
                       src={getFullMediaUrl(image)}
                       alt="Nội dung bài đăng"
-                      className="img-fluid rounded"
+                      className="w-full h-full object-cover rounded-lg"
                     />
                   </div>
                 ))}
@@ -98,13 +96,13 @@ const PostContent = memo(({ post, onImageClick }) => {
             )}
 
             {post.originalPost.videos?.length > 0 && (
-              <div className="media-grid mb-3" data-count={post.originalPost.videos.length}>
+              <div className={`grid gap-2 ${post.originalPost.videos.length > 1 ? 'grid-cols-2' : ''}`}>
                 {post.originalPost.videos.map((video, index) => (
-                  <div key={index} className="media-item">
+                  <div key={index} className="relative">
                     <video
                       src={getFullMediaUrl(video)}
                       controls
-                      className="img-fluid rounded"
+                      className="w-full object-cover rounded-lg"
                     />
                   </div>
                 ))}
@@ -113,45 +111,44 @@ const PostContent = memo(({ post, onImageClick }) => {
           </div>
         </div>
       ) : !isSharedPost ? (
-        <>
-          <p>{post.content}</p>
+        <div className="space-y-3">
+          <p className="text-gray-800">{post.content}</p>
           {post.images?.length > 0 && (
-            <div className="media-grid mb-3" data-count={post.images.length}>
+            <div className={`grid gap-2 ${post.images.length > 1 ? 'grid-cols-2' : ''}`}>
               {post.images.map((image, index) => (
                 <div
                   key={index}
-                  className="media-item"
+                  className="relative group cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     if (onImageClick) onImageClick(post.images, index);
                   }}
-                  style={{ cursor: 'pointer' }}
                 >
                   <img
                     src={getFullMediaUrl(image)}
                     alt="Nội dung bài đăng"
-                    className="img-fluid rounded"
+                    className="w-full max-h-[600px] object-cover object-center rounded-lg"
                   />
                 </div>
               ))}
             </div>
           )}
           {post.videos?.length > 0 && (
-            <div className="media-grid mb-3" data-count={post.videos.length}>
+            <div className={`grid gap-2 ${post.videos.length > 1 ? 'grid-cols-2' : ''}`}>
               {post.videos.map((video, index) => (
-                <div key={index} className="media-item">
+                <div key={index} className="relative aspect-video">
                   <video
                     src={getFullMediaUrl(video)}
                     controls
-                    className="img-fluid rounded"
+                    className="w-full h-full object-cover rounded-lg"
                   />
                 </div>
               ))}
             </div>
           )}
-        </>
+        </div>
       ) : (
-        <div className="alert alert-warning">
+        <div className="bg-yellow-50 text-yellow-800 p-4 rounded-lg">
           Bài đăng gốc không còn tồn tại
         </div>
       )}
@@ -204,7 +201,6 @@ const Comment = ({ comment, postId, onReply, onDelete, currentUser, userProfile,
       setReplyContent('');
       setShowReplyInput(false);
     } catch (error) {
-      // Không cần hiển thị alert ở đây nữa vì đã được xử lý ở handleComment
       console.error('Lỗi khi trả lời bình luận:', error);
     } finally {
       setIsLoading(false);
@@ -220,69 +216,65 @@ const Comment = ({ comment, postId, onReply, onDelete, currentUser, userProfile,
   const marginLeft = depth < MAX_DEPTH ? `${depth * 32}px` : `${MAX_DEPTH * 32}px`;
 
   return (
-    <div className="comment-thread" style={{ marginLeft }}>
-      <div className="comment-main d-flex gap-2 mb-2">
+    <div className="space-y-2" style={{ marginLeft }}>
+      <div className="flex gap-2">
         <img
           src={getFullImageUrl(comment.user?.avatar)}
           alt="User"
-          className="rounded-circle"
-          style={{ width: '32px', height: '32px', objectFit: 'cover' }}
+          className="w-8 h-8 rounded-full object-cover"
         />
-        <div className="flex-grow-1">
-          <div className="bg-light p-2 rounded comment-text">
-            <div className="fw-bold">
+        <div className="flex-1">
+          <div className="bg-gray-100 p-3 rounded-lg">
+            <div className="font-semibold">
               {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Unknown User'}
             </div>
-            {comment.content}
+            <div className="text-gray-800">{comment.content}</div>
           </div>
 
-          <div className="comment-actions mt-1 d-flex align-items-center">
+          <div className="flex items-center gap-2 mt-1">
             <button
-              className="btn btn-link btn-sm p-0 text-muted me-2"
+              className="text-sm text-gray-500 hover:text-gray-700"
               onClick={() => setShowReplyInput(!showReplyInput)}
             >
               Phản hồi
             </button>
             {isCommentOwner && (
               <button
-                className="btn btn-link btn-sm p-0 text-danger me-2"
+                className="text-sm text-red-500 hover:text-red-700"
                 onClick={() => onDelete(postId, comment.id)}
               >
                 <i className="bi bi-trash-fill"></i> Xóa
               </button>
             )}
-            <small className="text-muted ms-auto">
+            <span className="text-sm text-gray-500 ml-auto">
               {new Date(comment.createdAt).toLocaleString()}
-            </small>
+            </span>
           </div>
 
           {showReplyInput && (
-            <div className="reply-input-container d-flex gap-2 mt-2">
+            <div className="flex gap-2 mt-2">
               <img
                 src={userProfile?.avatar ? getFullImageUrl(userProfile.avatar) : '/default-imgs/avatar.png'}
                 alt="Current user"
-                className="rounded-circle"
-                style={{ width: '28px', height: '28px', objectFit: 'cover' }}
+                className="w-7 h-7 rounded-full object-cover"
                 onError={(e) => {
-                  e.target.src = '/default-imgs/avatar.png';  // Fallback khi load ảnh lỗi
+                  e.target.src = '/default-imgs/avatar.png';
                 }}
               />
-              <div className="flex-grow-1">
-                <div className="position-relative">
-                  <input
-                    type="text"
-                    className="form-control form-control-sm rounded-pill"
-                    placeholder={`Phản hồi ${comment.user?.firstName}...`}
-                    value={replyContent}
-                    onChange={(e) => setReplyContent(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
-                        e.preventDefault();
-                        handleReply();
-                      }
-                    }}
-                  />
-                </div>
+              <div className="flex-1">
+                <input
+                  type="text"
+                  className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500"
+                  placeholder={`Phản hồi ${comment.user?.firstName}...`}
+                  value={replyContent}
+                  onChange={(e) => setReplyContent(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
+                      e.preventDefault();
+                      handleReply();
+                    }
+                  }}
+                />
               </div>
             </div>
           )}
@@ -293,19 +285,17 @@ const Comment = ({ comment, postId, onReply, onDelete, currentUser, userProfile,
       {comment.replies && comment.replies.length > 0 && (
         <>
           {!showAllReplies && (
-            <div className="view-replies-wrapper">
-              <button
-                className="btn btn-link btn-sm text-primary mb-2 view-replies-btn"
-                onClick={() => setShowAllReplies(true)}
-              >
-                <span className="view-replies-icon"><i className="bi bi-arrow-return-right"></i></span>
-                <span className="view-replies-text">Xem {comment.replies.length} phản hồi</span>
-              </button>
-            </div>
+            <button
+              className="text-blue-500 hover:text-blue-700 text-sm flex items-center gap-1"
+              onClick={() => setShowAllReplies(true)}
+            >
+              <i className="bi bi-arrow-return-right"></i>
+              Xem {comment.replies.length} phản hồi
+            </button>
           )}
 
           {showAllReplies && (
-            <div className="replies-container">
+            <div className="space-y-2">
               {displayedReplies?.map((reply, index) => (
                 <Comment
                   key={reply.id || index}
@@ -466,37 +456,35 @@ const PostItem = memo(({ post, currentUser, userProfile, handleLike, handleComme
   }
 
   return (
-    <div id={`post-${post.id}`} key={post.id} className="card mb-3">
-      <div className="card-body">
-        <div className="d-flex align-items-center gap-2 mb-3">
+    <div id={`post-${post.id}`} className="bg-white rounded-lg shadow-sm mb-4">
+      <div className="p-4">
+        <div className="flex items-center gap-2 mb-3">
           <img
             src={getFullImageUrl(post.user?.avatar)}
             alt="Người dùng"
-            className="rounded-circle"
-            style={{ width: '40px', height: '40px', objectFit: 'cover', cursor: 'pointer' }}
+            className="w-10 h-10 rounded-full object-cover cursor-pointer"
             onClick={() => handleAvatarClick(post.user?.id)}
           />
-          <div className="flex-grow-1">
+          <div className="flex-1">
             <div
-              className="fw-bold"
-              style={{ cursor: 'pointer' }}
+              className="font-semibold cursor-pointer"
               onClick={() => handleAvatarClick(post.user?.id)}
             >
               {post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Người dùng không xác định'}
             </div>
-            <div className="d-flex align-items-center">
-              <small className="text-secondary me-2">
+            <div className="flex items-center">
+              <span className="text-sm text-gray-500 mr-2">
                 {new Date(post.createdAt).toLocaleString()}
-              </small>
-              <small className="text-secondary d-flex align-items-center">
-                <i className={`bi ${post.privacy === 'PUBLIC' ? 'bi-globe' : 'bi-lock-fill'} me-1`}></i>
-                <span className="privacy-text d-none d-sm-inline">{post.privacy === 'PUBLIC' ? 'Công khai' : 'Riêng tư'}</span>
-              </small>
+              </span>
+              <span className="text-sm text-gray-500 flex items-center">
+                <i className={`bi ${post.privacy === 'PUBLIC' ? 'bi-globe' : 'bi-lock-fill'} mr-1`}></i>
+                <span className="hidden sm:inline">{post.privacy === 'PUBLIC' ? 'Công khai' : 'Riêng tư'}</span>
+              </span>
             </div>
           </div>
 
           {isPostOwner && (
-            <div className="post-options">
+            <div className="relative">
               <PostOptionsMenu
                 postId={post.id}
                 onEdit={() => setIsEditing(true)}
@@ -507,140 +495,133 @@ const PostItem = memo(({ post, currentUser, userProfile, handleLike, handleComme
         </div>
 
         {isEditing ? (
-          <div className="edit-post-container mb-3">
+          <div className="space-y-3 mb-3">
             <textarea
-              className="form-control mb-2"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
               value={editContent}
               onChange={(e) => setEditContent(e.target.value)}
               rows="3"
               disabled={isLoading[`edit_${post.id}`]}
             ></textarea>
 
-            {/* Hiển thị tất cả media (cả hiện có và mới thêm) */}
+            {/* Media preview section */}
             {(keepImages.length > 0 || keepVideos.length > 0 || editMediaPreview.length > 0) && (
-              <div className="mb-3">
-                <div className="media-grid mb-2" data-count={keepImages.length + keepVideos.length + editMediaPreview.length}>
-                  {/* Hiển thị hình ảnh hiện có */}
-                  {keepImages.map((image, index) => (
-                    <div key={`existing-img-${index}`} className="media-item position-relative">
-                      <img
-                        src={getFullImageUrl(image)}
-                        alt={`Hình ảnh ${index + 1}`}
-                        className="img-fluid rounded"
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                        style={{ width: '24px', height: '24px', padding: '0', lineHeight: '24px' }}
-                        onClick={() => handleRemoveExistingImage(index)}
-                        disabled={isLoading[`edit_${post.id}`]}
-                      >
-                        <i className="bi bi-x"></i>
-                      </button>
-                    </div>
-                  ))}
+              <div className="grid gap-2 grid-cols-2">
+                {/* Existing images */}
+                {keepImages.map((image, index) => (
+                  <div key={`existing-img-${index}`} className="relative">
+                    <img
+                      src={getFullImageUrl(image)}
+                      alt={`Hình ảnh ${index + 1}`}
+                      className="w-full h-[200px] object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                      onClick={() => handleRemoveExistingImage(index)}
+                      disabled={isLoading[`edit_${post.id}`]}
+                    >
+                      <i className="bi bi-x"></i>
+                    </button>
+                  </div>
+                ))}
 
-                  {/* Hiển thị video hiện có */}
-                  {keepVideos.map((video, index) => (
-                    <div key={`existing-video-${index}`} className="media-item position-relative">
+                {/* Existing videos */}
+                {keepVideos.map((video, index) => (
+                  <div key={`existing-video-${index}`} className="relative">
+                    <div className=' aspect-video'>
                       <video
                         src={getFullImageUrl(video)}
                         controls
-                        className="img-fluid rounded"
+                        className="w-full h-full object-cover rounded-lg"
                       />
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                        style={{ width: '24px', height: '24px', padding: '0', lineHeight: '24px' }}
-                        onClick={() => handleRemoveExistingVideo(index)}
-                        disabled={isLoading[`edit_${post.id}`]}
-                      >
-                        <i className="bi bi-x"></i>
-                      </button>
                     </div>
-                  ))}
 
-                  {/* Hiển thị media mới thêm vào */}
-                  {editMediaPreview.map((preview, index) => (
-                    <div key={`new-media-${index}`} className="media-item position-relative">
-                      {editMedia[index].type.includes('video') ? (
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                      onClick={() => handleRemoveExistingVideo(index)}
+                      disabled={isLoading[`edit_${post.id}`]}
+                    >
+                      <i className="bi bi-x"></i>
+                    </button>
+                  </div>
+                ))}
+
+                {/* New media */}
+                {editMediaPreview.map((preview, index) => (
+                  <div key={`new-media-${index}`} className="relative">
+                    {editMedia[index].type.includes('video') ? (
+                      <div className=' aspect-video'>
                         <video
                           src={preview}
                           controls
-                          className="img-fluid rounded"
+                          className="w-full h-full object-cover rounded-lg"
                         />
-                      ) : (
-                        <img
-                          src={preview}
-                          alt={`Hình ảnh mới ${index + 1}`}
-                          className="img-fluid rounded"
-                        />
-                      )}
-                      <button
-                        type="button"
-                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1 rounded-circle"
-                        style={{ width: '24px', height: '24px', padding: '0', lineHeight: '24px' }}
-                        onClick={() => handleRemoveNewMedia(index)}
-                        disabled={isLoading[`edit_${post.id}`]}
-                      >
-                        <i className="bi bi-x"></i>
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                      </div>
+
+                    ) : (
+                      <img
+                        src={preview}
+                        alt={`Hình ảnh mới ${index + 1}`}
+                        className="w-full h-[200px] object-cover rounded-lg"
+                      />
+                    )}
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                      onClick={() => handleRemoveNewMedia(index)}
+                      disabled={isLoading[`edit_${post.id}`]}
+                    >
+                      <i className="bi bi-x"></i>
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
 
-            {/* Nút thêm media */}
-            <div className="d-flex mb-3">
-              <label htmlFor="edit-media-upload" className="btn btn-outline-secondary btn-sm">
-                <i className="bi bi-image me-1"></i> Thêm ảnh/video
+            {/* Add media button */}
+            <div className="flex justify-between items-center">
+              <label className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50">
+                <i className="bi bi-image mr-2"></i>
+                Thêm ảnh/video
                 <input
-                  id="edit-media-upload"
                   type="file"
                   accept="image/*,video/*"
                   onChange={handleEditMediaChange}
-                  style={{ display: 'none' }}
+                  className="hidden"
                   disabled={isLoading[`edit_${post.id}`]}
                   multiple
                 />
               </label>
-            </div>
 
-            <div className="d-flex justify-content-between align-items-center mb-2">
-              <div className="privacy-selector">
+              <div className="flex items-center gap-2">
                 <select
-                  className="form-select form-select-sm"
+                  className="px-3 py-1 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
                   value={editPrivacy}
                   onChange={(e) => setEditPrivacy(e.target.value)}
-                  aria-label="Chọn quyền riêng tư"
                   disabled={isLoading[`edit_${post.id}`]}
                 >
                   <option value="PUBLIC">Công khai</option>
                   <option value="PRIVATE">Riêng tư</option>
                 </select>
-              </div>
 
-              <div className="d-flex gap-2">
                 <button
-                  className="btn btn-sm btn-secondary"
+                  className="px-4 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
                   onClick={resetEditState}
                   disabled={isLoading[`edit_${post.id}`]}
                 >
                   Hủy
                 </button>
                 <button
-                  className="btn btn-sm btn-primary"
+                  className="px-4 py-1 text-sm bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
                   onClick={async () => {
                     let success = false;
                     if (editMedia.length > 0 || keepImages.length !== (post.images?.length || 0) || keepVideos.length !== (post.videos?.length || 0)) {
-                      // Nếu có thay đổi về media, sử dụng API update-with-media
                       success = await handleEditPostWithMedia(post.id, editContent, editPrivacy, editMedia, keepImages, keepVideos);
                     } else {
-                      // Nếu chỉ thay đổi nội dung hoặc quyền riêng tư, sử dụng API thông thường
                       success = await handleEditPost(post.id, editContent, editPrivacy);
                     }
-                    // Chỉ đóng form edit nếu cập nhật thành công
                     if (success) {
                       setIsEditing(false);
                     }
@@ -648,10 +629,10 @@ const PostItem = memo(({ post, currentUser, userProfile, handleLike, handleComme
                   disabled={isLoading[`edit_${post.id}`]}
                 >
                   {isLoading[`edit_${post.id}`] ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                       Đang lưu...
-                    </>
+                    </div>
                   ) : 'Lưu'}
                 </button>
               </div>
@@ -659,8 +640,7 @@ const PostItem = memo(({ post, currentUser, userProfile, handleLike, handleComme
           </div>
         ) : (
           <div
-            className="post-content-container"
-            style={{ cursor: 'pointer' }}
+            className="cursor-pointer"
             onClick={() => navigate(`/posts/${post.id}`)}
           >
             <PostContent
@@ -672,117 +652,112 @@ const PostItem = memo(({ post, currentUser, userProfile, handleLike, handleComme
               }}
             />
             {post.privacy === 'PRIVATE' && (
-              <div className="privacy-indicator mt-1">
-                <small className="text-muted">
-                  <i className="bi bi-lock-fill me-1"></i> Riêng tư
-                </small>
+              <div className="mt-1">
+                <span className="text-sm text-gray-500">
+                  <i className="bi bi-lock-fill mr-1"></i> Riêng tư
+                </span>
               </div>
             )}
           </div>
         )}
 
-        <div className="d-flex gap-3 mb-3">
+        <div className="flex items-center gap-6 mt-3 border-t border-gray-200 pt-3">
           <button
-            className={`btn btn-link like-button ${post.likes?.includes(currentUser.id) ? 'text-primary' : 'text-secondary'}`}
+            className={`flex items-center gap-1 ${post.likes?.includes(currentUser.id) ? 'text-blue-500' : 'text-gray-500'} hover:text-blue-600`}
             onClick={() => handleLike(post.id)}
           >
             <img
               src={post.likes?.includes(currentUser.id) ? "/img/icons/liked.png" : "/img/icons/like.png"}
               alt="Thích"
-              className="action-icon"
+              className="w-5 h-5"
             />
             <span>{post.likes?.length || 0} Thích</span>
           </button>
           <button
-            className="btn btn-link text-secondary"
+            className="flex items-center gap-1 text-gray-500 hover:text-gray-700"
             onClick={() => navigate(`/posts/${post.id}`)}
           >
             <img
               src="/img/icons/comment.png"
               alt="Bình luận"
-              className="action-icon"
+              className="w-5 h-5"
             />
             <span>{post.comments?.length || 0} Bình luận</span>
           </button>
           <button
-            className="btn btn-link text-secondary"
+            className="flex items-center gap-1 text-gray-500 hover:text-gray-700"
             onClick={() => handleShareClick(post)}
           >
             <img
               src="/img/icons/share.png"
               alt="Chia sẻ"
-              className="action-icon"
+              className="w-5 h-5"
             />
             <span>Chia sẻ</span>
           </button>
         </div>
 
-        <div className="comments-section">
+        <div className="mt-3 space-y-3">
           {post.comments?.slice(0, 2).map((comment, index) => (
-              !comment.parentId && (
-                <Comment
-                  key={comment.id || index}
-                  comment={comment}
-                  postId={post.id}
-                  onReply={handleComment}
-                  onDelete={handleDeleteComment}
-                  currentUser={currentUser}
-                  userProfile={userProfile}
-                  getFullImageUrl={getFullImageUrl}
-                />
-              )
-            ))}
+            !comment.parentId && (
+              <Comment
+                key={comment.id || index}
+                comment={comment}
+                postId={post.id}
+                onReply={handleComment}
+                onDelete={handleDeleteComment}
+                currentUser={currentUser}
+                userProfile={userProfile}
+                getFullImageUrl={getFullImageUrl}
+              />
+            )
+          ))}
           {post.comments?.length > 2 && (
             <button
-              className="btn btn-link text-primary mb-2"
+              className="text-blue-500 hover:text-blue-700"
               onClick={() => navigate(`/posts/${post.id}`)}
             >
               Xem thêm {post.comments.length - 2} bình luận
             </button>
           )}
 
-          {/* Input để thêm comment mới */}
-          <div className="d-flex gap-2 align-items-center mt-3">
+          <div className="flex items-center gap-2">
             <img
               src={userProfile?.avatar ? getFullImageUrl(userProfile.avatar) : '/default-imgs/avatar.png'}
               alt="Current user"
-              className="rounded-circle"
-              style={{ width: '30px', height: '30px', objectFit: 'cover' }}
+              className="w-8 h-8 rounded-full object-cover"
               onError={(e) => {
                 e.target.src = '/default-imgs/avatar.png';
               }}
             />
-            <div className="flex-grow-1 position-relative">
-              <div className="d-flex align-items-center">
-                <input
-                  type="text"
-                  className="form-control rounded-pill comment-input"
-                  placeholder="Viết bình luận..."
-                  value={commentInputs[post.id] || ''}
-                  onChange={(e) => setCommentInputs(prev => ({
-                    ...prev,
-                    [post.id]: e.target.value
-                  }))}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !isLoading[post.id]) {
-                      handleComment(post.id, e.target.value);
-                    }
-                  }}
-                />
-                <button
-                  className="btn btn-link text-primary ms-2"
-                  onClick={() => !isLoading[post.id] && handleComment(post.id, commentInputs[post.id])}
-                  disabled={isLoading[post.id] || !commentInputs[post.id]?.trim()}
-                >
-                  <i className="bi bi-send-fill"></i>
-                </button>
-              </div>
+            <div className="flex-1 relative">
+              <input
+                type="text"
+                className="w-full px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:border-blue-500"
+                placeholder="Viết bình luận..."
+                value={commentInputs[post.id] || ''}
+                onChange={(e) => setCommentInputs(prev => ({
+                  ...prev,
+                  [post.id]: e.target.value
+                }))}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !isLoading[post.id]) {
+                    handleComment(post.id, e.target.value);
+                  }
+                }}
+              />
+              <button
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-700"
+                onClick={() => !isLoading[post.id] && handleComment(post.id, commentInputs[post.id])}
+                disabled={isLoading[post.id] || !commentInputs[post.id]?.trim()}
+              >
+                <i className="bi bi-send-fill"></i>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Image Viewer Modal */}
       {showImageViewer && (
         <ImageViewerModal
           show={showImageViewer}
@@ -1282,7 +1257,7 @@ const PostList = ({ posts: initialPosts, currentUser }) => {
   }
 
   return (
-    <div className="post-list-container" ref={listRef} style={{ overflowY: 'auto' }}>
+    <div className="post-list-container shadow-sm rounded-xl" ref={listRef} style={{ overflowY: 'auto' }}>
       {Array.isArray(posts) && posts.map((post) => (
         post && post.id ? (
           <PostItem

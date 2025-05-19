@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import "./ChatForm.css";
 
 /**
  * Component hiển thị form chat với Gemini AI
@@ -65,11 +64,11 @@ function ChatForm() {
   };
 
   return (
-    <div className="chat-container">
+    <div className="fixed bottom-5 right-5 z-[1000]">
       {/* Nút mở cửa sổ chat */}
       {!isOpen && (
         <button
-          className="chat-toggle-btn"
+          className="border-none rounded-full flex justify-center shadow-md cursor-pointer p-0"
           onClick={toggleChat}
           aria-label="Mở cửa sổ chat với Gemini"
         >
@@ -83,12 +82,12 @@ function ChatForm() {
 
       {/* Cửa sổ chat */}
       {isOpen && (
-        <div className="chat-window">
+        <div className="w-[300px] h-[400px] bg-white rounded-[10px] shadow-lg flex flex-col">
           {/* Phần tiêu đề chat */}
-          <div className="chat-header">
+          <div className="bg-[#007bff] text-white p-2.5 rounded-t-[10px] flex justify-between items-center">
             <h5>Chat với Gemini</h5>
             <button
-              className="chat-close-btn"
+              className="bg-none border-none text-white text-[20px] cursor-pointer"
               onClick={toggleChat}
               aria-label="Đóng cửa sổ chat"
             >
@@ -97,11 +96,11 @@ function ChatForm() {
           </div>
 
           {/* Phần nội dung chat */}
-          <div className="chat-body">
+          <div className="flex-1 p-2.5 overflow-y-auto bg-[#f8f9fa]">
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`chat-message ${msg.role === "user" ? "user" : "assistant"}`}
+                className={`px-3 py-0.5 rounded-[10px] max-w-[80%] ${msg.role === "user" ? "bg-[#007bff] text-white ml-auto" : "bg-[#e9ecef] text-black mr-auto"}`}
               >
                 {msg.content}
               </div>
@@ -111,11 +110,11 @@ function ChatForm() {
           </div>
 
           {/* Phần nhập tin nhắn */}
-          <div className="chat-footer">
+          <div className="p-2.5 border-t border-[#dee2e6] flex gap-2.5">
             <form onSubmit={handleSend}>
               <input
                 type="text"
-                className="form-control"
+                className="flex-1"
                 placeholder="Nhập tin nhắn..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -123,7 +122,7 @@ function ChatForm() {
               />
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="px-5"
                 aria-label="Gửi tin nhắn"
               >
                 Gửi

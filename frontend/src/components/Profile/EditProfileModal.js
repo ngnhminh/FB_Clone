@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button, Form, Row, Col, Tabs, Tab } from 'react-bootstrap';
 import { API_ENDPOINTS } from '../../config/api';
-import './EditProfileModal.css';
 import Cropper from 'react-easy-crop';
 
 const EditProfileModal = ({
@@ -438,346 +436,416 @@ const EditProfileModal = ({
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      size="lg"
-      centered
-      className="edit-profile-modal"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>Chỉnh sửa hồ sơ</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <Tabs
-          activeKey={activeTab}
-          onSelect={(k) => setActiveTab(k)}
-          className="mb-4 profile-tabs"
-        >
-          <Tab eventKey="personal" title="Thông tin cá nhân">
-            <Form>
-              <Row>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Tên</Form.Label>
-                    <Form.Control
+    <div className={`fixed inset-0 z-50 ${show ? 'block' : 'hidden'}`}>
+      <div className="fixed inset-0 bg-black bg-opacity-50" onClick={onHide}></div>
+      <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl bg-white rounded-lg shadow-xl">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <h3 className="text-xl font-semibold text-gray-900">Chỉnh sửa hồ sơ</h3>
+          <button
+            onClick={onHide}
+            className="text-gray-400 hover:text-gray-500 focus:outline-none"
+          >
+            <span className="sr-only">Đóng</span>
+            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-6">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab('personal')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'personal'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Thông tin cá nhân
+              </button>
+              <button
+                onClick={() => setActiveTab('password')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'password'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Đổi mật khẩu
+              </button>
+              <button
+                onClick={() => setActiveTab('avatar')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'avatar'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Ảnh đại diện
+              </button>
+              <button
+                onClick={() => setActiveTab('cover')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'cover'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                Ảnh bìa
+              </button>
+            </nav>
+          </div>
+
+          <div className="mt-6">
+            {activeTab === 'personal' && (
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tên</label>
+                    <input
                       type="text"
                       value={firstName}
                       onChange={(e) => setFirstName(e.target.value)}
-                      isInvalid={!!errors.firstName}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.firstName ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.firstName}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Họ</Form.Label>
-                    <Form.Control
+                    {errors.firstName && (
+                      <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Họ</label>
+                    <input
                       type="text"
                       value={lastName}
                       onChange={(e) => setLastName(e.target.value)}
-                      isInvalid={!!errors.lastName}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.lastName ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.lastName}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                </Col>
-              </Row>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  isInvalid={!!errors.email}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {errors.email}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Giới thiệu</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                />
-                <Form.Text className="text-muted">
-                  Hãy chia sẻ một chút về bản thân
-                </Form.Text>
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Giới tính</Form.Label>
-                <div>
-                  <Form.Check
-                    inline
-                    type="radio"
-                    label="Nam"
-                    name="gender"
-                    id="male"
-                    checked={gender === 'Male'}
-                    onChange={() => setGender('Male')}
-                  />
-                  <Form.Check
-                    inline
-                    type="radio"
-                    label="Nữ"
-                    name="gender"
-                    id="female"
-                    checked={gender === 'Female'}
-                    onChange={() => setGender('Female')}
-                  />
-                  <Form.Check
-                    inline
-                    type="radio"
-                    label="Khác"
-                    name="gender"
-                    id="other"
-                    checked={gender === 'Other'}
-                    onChange={() => setGender('Other')}
-                  />
+                    {errors.lastName && (
+                      <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                    )}
+                  </div>
                 </div>
-              </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Ngày sinh</Form.Label>
-                <Row>
-                  <Col md={4}>
-                    <Form.Select
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.email ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Giới thiệu</label>
+                  <textarea
+                    value={bio}
+                    onChange={(e) => setBio(e.target.value)}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="mt-1 text-sm text-gray-500">Hãy chia sẻ một chút về bản thân</p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Giới tính</label>
+                  <div className="flex space-x-4">
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Male"
+                        checked={gender === 'Male'}
+                        onChange={() => setGender('Male')}
+                        className="form-radio h-4 w-4 text-blue-600"
+                      />
+                      <span className="ml-2 text-gray-700">Nam</span>
+                    </label>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Female"
+                        checked={gender === 'Female'}
+                        onChange={() => setGender('Female')}
+                        className="form-radio h-4 w-4 text-blue-600"
+                      />
+                      <span className="ml-2 text-gray-700">Nữ</span>
+                    </label>
+                    <label className="inline-flex items-center">
+                      <input
+                        type="radio"
+                        name="gender"
+                        value="Other"
+                        checked={gender === 'Other'}
+                        onChange={() => setGender('Other')}
+                        className="form-radio h-4 w-4 text-blue-600"
+                      />
+                      <span className="ml-2 text-gray-700">Khác</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ngày sinh</label>
+                  <div className="grid grid-cols-3 gap-4">
+                    <select
                       value={day}
                       onChange={(e) => setDay(e.target.value)}
-                      isInvalid={!!errors.date}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.date ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     >
                       <option value="">Ngày</option>
                       {[...Array(31)].map((_, i) => (
                         <option key={i + 1} value={i + 1}>{i + 1}</option>
                       ))}
-                    </Form.Select>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Select
+                    </select>
+                    <select
                       value={month}
                       onChange={(e) => setMonth(e.target.value)}
-                      isInvalid={!!errors.date}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.date ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     >
                       <option value="">Tháng</option>
                       {['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'].map((m, i) => (
                         <option key={i} value={m}>{m}</option>
                       ))}
-                    </Form.Select>
-                  </Col>
-                  <Col md={4}>
-                    <Form.Select
+                    </select>
+                    <select
                       value={year}
                       onChange={(e) => setYear(e.target.value)}
-                      isInvalid={!!errors.date}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                        errors.date ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     >
                       <option value="">Năm</option>
                       {[...Array(100)].map((_, i) => {
                         const yearOption = new Date().getFullYear() - i;
                         return <option key={yearOption} value={yearOption}>{yearOption}</option>;
                       })}
-                    </Form.Select>
-                  </Col>
-                </Row>
-                {errors.date && (
-                  <div className="text-danger mt-1">{errors.date}</div>
-                )}
-              </Form.Group>
-            </Form>
-          </Tab>
+                    </select>
+                  </div>
+                  {errors.date && (
+                    <p className="mt-1 text-sm text-red-600">{errors.date}</p>
+                  )}
+                </div>
+              </form>
+            )}
 
-          <Tab eventKey="password" title="Đổi mật khẩu">
-            <Form onSubmit={handlePasswordChange}>
-              <Form.Group className="mb-3">
-                <Form.Label>Mật khẩu hiện tại</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  isInvalid={!!passwordErrors.currentPassword}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {passwordErrors.currentPassword}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Mật khẩu mới</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  isInvalid={!!passwordErrors.newPassword}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {passwordErrors.newPassword}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Xác nhận mật khẩu mới</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                  isInvalid={!!passwordErrors.confirmNewPassword}
-                />
-                <Form.Control.Feedback type="invalid">
-                  {passwordErrors.confirmNewPassword}
-                </Form.Control.Feedback>
-              </Form.Group>
-
-              <Button
-                variant="primary"
-                type="submit"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
-              </Button>
-            </Form>
-          </Tab>
-
-          <Tab eventKey="avatar" title="Ảnh đại diện">
-            <div className="image-editor-container">
-              <div className="current-image-preview mb-4">
-                <h5>Ảnh đại diện hiện tại</h5>
-                {!avatar && (
-                  <img
-                    src={avatarPreview}
-                    alt="Ảnh đại diện hiện tại"
-                    className="current-avatar-preview"
-                    onError={(e) => {
-                      e.target.src = '/default-imgs/avatar.png';
-                    }}
+            {activeTab === 'password' && (
+              <form onSubmit={handlePasswordChange} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu hiện tại</label>
+                  <input
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      passwordErrors.currentPassword ? 'border-red-500' : 'border-gray-300'
+                    }`}
                   />
-                )}
-              </div>
+                  {passwordErrors.currentPassword && (
+                    <p className="mt-1 text-sm text-red-600">{passwordErrors.currentPassword}</p>
+                  )}
+                </div>
 
-              <div className="image-editor-controls">
-                <Form.Group className="mb-3">
-                  <Form.Label>Tải lên ảnh đại diện mới</Form.Label>
-                  <Form.Control
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu mới</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      passwordErrors.newPassword ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {passwordErrors.newPassword && (
+                    <p className="mt-1 text-sm text-red-600">{passwordErrors.newPassword}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Xác nhận mật khẩu mới</label>
+                  <input
+                    type="password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      passwordErrors.confirmNewPassword ? 'border-red-500' : 'border-gray-300'
+                    }`}
+                  />
+                  {passwordErrors.confirmNewPassword && (
+                    <p className="mt-1 text-sm text-red-600">{passwordErrors.confirmNewPassword}</p>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật mật khẩu'}
+                </button>
+              </form>
+            )}
+
+            {activeTab === 'avatar' && (
+              <div className="space-y-6">
+                <div>
+                  <h5 className="text-lg font-medium text-gray-900 mb-4">Ảnh đại diện hiện tại</h5>
+                  {!avatar && (
+                    <img
+                      src={avatarPreview}
+                      alt="Ảnh đại diện hiện tại"
+                      className="w-32 h-32 rounded-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/default-imgs/avatar.png';
+                      }}
+                    />
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tải lên ảnh đại diện mới</label>
+                  <input
                     type="file"
                     accept="image/*"
                     onChange={handleAvatarChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Form.Group>
+                </div>
 
                 {avatar && (
                   <>
-                    <div className="avatar-editor-wrapper">
-                      <div style={{ position: 'relative', height: '300px', width: '100%' }}>
-                        <Cropper
-                          image={avatarPreview}
-                          crop={avatarCrop}
-                          zoom={avatarZoom}
-                          aspect={1}
-                          cropShape="round"
-                          showGrid={false}
-                          onCropChange={setAvatarCrop}
-                          onCropComplete={onAvatarCropComplete}
-                          onZoomChange={setAvatarZoom}
-                        />
-                      </div>
+                    <div className="relative h-[300px] w-full">
+                      <Cropper
+                        image={avatarPreview}
+                        crop={avatarCrop}
+                        zoom={avatarZoom}
+                        aspect={1}
+                        cropShape="round"
+                        showGrid={false}
+                        onCropChange={setAvatarCrop}
+                        onCropComplete={onAvatarCropComplete}
+                        onZoomChange={setAvatarZoom}
+                      />
                     </div>
 
-                    <Form.Group className="mt-3">
-                      <Form.Label>Thu phóng: {avatarZoom.toFixed(1)}x</Form.Label>
-                      <Form.Range
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Thu phóng: {avatarZoom.toFixed(1)}x
+                      </label>
+                      <input
+                        type="range"
                         min={1}
                         max={3}
                         step={0.1}
                         value={avatarZoom}
                         onChange={(e) => setAvatarZoom(parseFloat(e.target.value))}
+                        className="w-full"
                       />
-                    </Form.Group>
+                    </div>
                   </>
                 )}
               </div>
-            </div>
-          </Tab>
+            )}
 
-          <Tab eventKey="cover" title="Ảnh bìa">
-            <div className="image-editor-container">
-              <div className="current-image-preview mb-4">
-                <h5>Ảnh bìa hiện tại</h5>
-                {!coverPhoto && (
-                  <img
-                    src={coverPreview}
-                    alt="Ảnh bìa hiện tại"
-                    className="current-cover-preview"
-                    onError={(e) => {
-                      e.target.src = '/default-imgs/cover.jpg';
-                    }}
-                  />
-                )}
-              </div>
+            {activeTab === 'cover' && (
+              <div className="space-y-6">
+                <div>
+                  <h5 className="text-lg font-medium text-gray-900 mb-4">Ảnh bìa hiện tại</h5>
+                  {!coverPhoto && (
+                    <img
+                      src={coverPreview}
+                      alt="Ảnh bìa hiện tại"
+                      className="w-full h-48 object-cover rounded-lg"
+                      onError={(e) => {
+                        e.target.src = '/default-imgs/cover.jpg';
+                      }}
+                    />
+                  )}
+                </div>
 
-              <div className="image-editor-controls">
-                <Form.Group className="mb-3">
-                  <Form.Label>Tải lên ảnh bìa mới</Form.Label>
-                  <Form.Control
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Tải lên ảnh bìa mới</label>
+                  <input
                     type="file"
                     accept="image/*"
                     onChange={handleCoverChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                </Form.Group>
+                </div>
 
                 {coverPhoto && (
                   <>
-                    <div className="cover-editor-wrapper">
-                      <div style={{ position: 'relative', height: '250px', width: '100%' }}>
-                        <Cropper
-                          image={coverPreview}
-                          crop={coverCrop}
-                          zoom={coverZoom}
-                          aspect={2.5}
-                          showGrid={false}
-                          onCropChange={setCoverCrop}
-                          onCropComplete={onCoverCropComplete}
-                          onZoomChange={setCoverZoom}
-                        />
-                      </div>
+                    <div className="relative h-[250px] w-full">
+                      <Cropper
+                        image={coverPreview}
+                        crop={coverCrop}
+                        zoom={coverZoom}
+                        aspect={2.5}
+                        showGrid={false}
+                        onCropChange={setCoverCrop}
+                        onCropComplete={onCoverCropComplete}
+                        onZoomChange={setCoverZoom}
+                      />
                     </div>
 
-                    <Form.Group className="mt-3">
-                      <Form.Label>Thu phóng: {coverZoom.toFixed(1)}x</Form.Label>
-                      <Form.Range
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Thu phóng: {coverZoom.toFixed(1)}x
+                      </label>
+                      <input
+                        type="range"
                         min={1}
                         max={3}
                         step={0.1}
                         value={coverZoom}
                         onChange={(e) => setCoverZoom(parseFloat(e.target.value))}
+                        className="w-full"
                       />
-                    </Form.Group>
+                    </div>
                   </>
                 )}
               </div>
-            </div>
-          </Tab>
-        </Tabs>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onHide} disabled={isSubmitting}>
-          Hủy
-        </Button>
-        <Button
-          variant="primary"
-          onClick={handleSubmit}
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Đang lưu...' : 'Lưu thay đổi'}
-        </Button>
-      </Modal.Footer>
-    </Modal>
+            )}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-end gap-3 p-4 border-t">
+          <button
+            onClick={onHide}
+            disabled={isSubmitting}
+            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Hủy
+          </button>
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Đang lưu...' : 'Lưu thay đổi'}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

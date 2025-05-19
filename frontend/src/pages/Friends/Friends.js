@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { API_ENDPOINTS } from '../../config/api';
 import { useNavigate } from 'react-router-dom';
-import './Friends.css';
 
 /**
  * Lấy URL đầy đủ của hình ảnh
@@ -241,32 +240,44 @@ function Friends() {
   const currentItems = filteredData.slice(startIndex, startIndex + friendsPerPage);
 
   return (
-    <div className="friends-page">
+    <div className="flex min-h-screen bg-gray-100">
       {/* Thanh bên trái */}
-      <div className="sidebar">
-        <h4>Bạn bè</h4>
-        <ul className="nav flex-column">
-          <li className="nav-item">
+      <div className="w-64 bg-white shadow-sm p-4 pl-0">
+        <h4 className="text-xl font-semibold mb-4">Bạn bè</h4>
+        <ul className="space-y-2 pl-0">
+          <li>
             <button
-              className={`nav-link ${activeTab === 'requests' ? 'active' : ''}`}
+              className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'requests' 
+                  ? 'bg-blue-100 text-blue-600' 
+                  : 'hover:bg-gray-100 text-gray-700'
+              }`}
               onClick={() => { setActiveTab('requests'); setCurrentPage(1); }}
               aria-label="Xem yêu cầu kết bạn"
             >
               Yêu cầu kết bạn
             </button>
           </li>
-          <li className="nav-item">
+          <li>
             <button
-              className={`nav-link ${activeTab === 'friends' ? 'active' : ''}`}
+              className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'friends' 
+                  ? 'bg-blue-100 text-blue-600' 
+                  : 'hover:bg-gray-100 text-gray-700'
+              }`}
               onClick={() => { setActiveTab('friends'); setCurrentPage(1); }}
               aria-label="Xem danh sách bạn bè"
             >
               Danh sách bạn bè
             </button>
           </li>
-          <li className="nav-item">
+          <li>
             <button
-              className={`nav-link ${activeTab === 'suggestions' ? 'active' : ''}`}
+              className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                activeTab === 'suggestions' 
+                  ? 'bg-blue-100 text-blue-600' 
+                  : 'hover:bg-gray-100 text-gray-700'
+              }`}
               onClick={() => { setActiveTab('suggestions'); setCurrentPage(1); }}
               aria-label="Xem gợi ý bạn bè"
             >
@@ -277,14 +288,14 @@ function Friends() {
       </div>
 
       {/* Nội dung chính */}
-      <div className="main-content">
-        <h1>
+      <div className="flex-1 p-6">
+        <h1 className="text-2xl font-bold mb-6">
           {activeTab === 'requests' ? 'Lời mời kết bạn' : activeTab === 'friends' ? 'Danh sách bạn bè' : 'Gợi ý bạn bè'}
         </h1>
 
         {/* Hiển thị thông báo nếu không có dữ liệu */}
         {currentItems.length === 0 ? (
-          <p className="text-muted">
+          <p className="text-gray-500 text-center py-8">
             {activeTab === 'requests'
               ? 'Chưa có lời mời kết bạn nào.'
               : activeTab === 'friends'
@@ -292,70 +303,67 @@ function Friends() {
                 : 'Không có gợi ý bạn bè nào.'}
           </p>
         ) : (
-          <div className="row">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {/* Danh sách người dùng */}
             {currentItems.map((item) => (
-              <div key={item.requestId || (item.user && item.user.id) || item.id} className="col-sm-6 col-md-4 col-lg-2 mb-4">
-                <div className="card">
-                  <div className="card-image-container">
-                    <img
-                      src={getFullImageUrl(item.user?.avatar || item.avatar)}
-                      alt={`Ảnh đại diện của ${item.user?.firstName || item.firstName} ${item.user?.lastName || item.lastName}`}
-                      className="card-img-top avatar-clickable"
-                      onClick={(e) => handleAvatarClick(item.user?.id || item.id, e)}
-                    />
-                  </div>
-                  <div className="card-body">
-                    <h5 
-                      className="card-title"
-                      style={{ cursor: 'pointer' }}
-                      onClick={(e) => handleAvatarClick(item.user?.id || item.id, e)}
-                    >
-                      {item.user ? `${item.user.firstName} ${item.user.lastName}` : `${item.firstName} ${item.lastName}`}
-                    </h5>
-                    <div className="button-group">
-                      {/* Nút cho tab yêu cầu kết bạn */}
-                      {activeTab === 'requests' && (
-                        <div className="button-group request-buttons">
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => handleFriendAction(item.requestId, 'accept')}
-                            aria-label={`Chấp nhận lời mời kết bạn từ ${item.user?.firstName} ${item.user?.lastName}`}
-                          >
-                            Chấp nhận
-                          </button>
-                          <button
-                            className="btn btn-secondary"
-                            onClick={() => handleFriendAction(item.requestId, 'reject')}
-                            aria-label={`Từ chối lời mời kết bạn từ ${item.user?.firstName} ${item.user?.lastName}`}
-                          >
-                            Từ chối
-                          </button>
-                        </div>
-                      )}
-
-                      {/* Nút cho tab danh sách bạn bè */}
-                      {activeTab === 'friends' && (
+              <div key={item.requestId || (item.user && item.user.id) || item.id} className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="relative aspect-square">
+                  <img
+                    src={getFullImageUrl(item.user?.avatar || item.avatar)}
+                    alt={`Ảnh đại diện của ${item.user?.firstName || item.firstName} ${item.user?.lastName || item.lastName}`}
+                    className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={(e) => handleAvatarClick(item.user?.id || item.id, e)}
+                  />
+                </div>
+                <div className="p-4">
+                  <h5 
+                    className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors mb-3"
+                    onClick={(e) => handleAvatarClick(item.user?.id || item.id, e)}
+                  >
+                    {item.user ? `${item.user.firstName} ${item.user.lastName}` : `${item.firstName} ${item.lastName}`}
+                  </h5>
+                  <div className="space-y-2">
+                    {/* Nút cho tab yêu cầu kết bạn */}
+                    {activeTab === 'requests' && (
+                      <div className="flex gap-2">
                         <button
-                          className="btn btn-danger btn-sm"
-                          onClick={() => handleFriendAction(item.id, 'unfriend')}
-                          aria-label={`Hủy kết bạn với ${item.firstName} ${item.lastName}`}
+                          className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+                          onClick={() => handleFriendAction(item.requestId, 'accept')}
+                          aria-label={`Chấp nhận lời mời kết bạn từ ${item.user?.firstName} ${item.user?.lastName}`}
                         >
-                          Hủy kết bạn
+                          Chấp nhận
                         </button>
-                      )}
-
-                      {/* Nút cho tab gợi ý bạn bè */}
-                      {activeTab === 'suggestions' && (
                         <button
-                          className="btn btn-primary btn-sm"
-                          onClick={() => handleFriendAction(item.id, 'add')}
-                          aria-label={`Kết bạn với ${item.firstName} ${item.lastName}`}
+                          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors"
+                          onClick={() => handleFriendAction(item.requestId, 'reject')}
+                          aria-label={`Từ chối lời mời kết bạn từ ${item.user?.firstName} ${item.user?.lastName}`}
                         >
-                          Kết bạn
+                          Từ chối
                         </button>
-                      )}
-                    </div>
+                      </div>
+                    )}
+
+                    {/* Nút cho tab danh sách bạn bè */}
+                    {activeTab === 'friends' && (
+                      <button
+                        className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                        onClick={() => handleFriendAction(item.id, 'unfriend')}
+                        aria-label={`Hủy kết bạn với ${item.firstName} ${item.lastName}`}
+                      >
+                        Hủy kết bạn
+                      </button>
+                    )}
+
+                    {/* Nút cho tab gợi ý bạn bè */}
+                    {activeTab === 'suggestions' && (
+                      <button
+                        className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+                        onClick={() => handleFriendAction(item.id, 'add')}
+                        aria-label={`Kết bạn với ${item.firstName} ${item.lastName}`}
+                      >
+                        Kết bạn
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -365,20 +373,20 @@ function Friends() {
 
         {/* Phân trang */}
         {totalPages > 1 && (
-          <div className="pagination d-flex align-items-center justify-content-center">
+          <div className="flex items-center justify-center mt-8 gap-4">
             <button
-              className="btn btn-outline-primary pagination-arrow"
+              className="px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
               aria-label="Trang trước"
             >
               &lt;
             </button>
-            <span className="pagination-text mx-3">
+            <span className="text-gray-600">
               Trang {currentPage} / {totalPages}
             </span>
             <button
-              className="btn btn-outline-primary pagination-arrow"
+              className="px-4 py-2 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
               aria-label="Trang sau"

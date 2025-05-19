@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import { API_ENDPOINTS } from "../config/api";
-import './LeftSidebar.css';
 
 /**
  * Component hiển thị thanh bên trái với các liên kết và thông tin người dùng
@@ -44,21 +43,21 @@ function LeftSidebar() {
   };
 
   return (
-    <div
-      className="col-3 p-3 position-fixed"
-      style={{ top: "60px", height: "calc(100vh - 60px)", overflowY: "auto" }}
-    >
+    <div className="col-3 p-3 fixed top-16 h-[calc(100vh-60px)] overflow-y-auto">
       {/* Thông tin người dùng */}
-      <div className="d-flex align-items-center gap-2 mb-3">
-        <Link to="/profile" style={{ textDecoration: "none", color: "black" }} aria-label="Xem hồ sơ cá nhân">
-          <div className="d-flex align-items-center flex-row">
+      <div className="flex items-center p-2 gap-2">
+        <Link 
+          to="/profile" 
+          className="no-underline text-gray-900 hover:text-blue-600 transition-colors" 
+          aria-label="Xem hồ sơ cá nhân"
+        >
+          <div className="flex items-center">
             <img
               src={getFullImageUrl(userProfile?.avatar)}
               alt="Ảnh đại diện"
-              className="rounded-circle"
-              style={{ width: "40px", height: "40px", objectFit: "cover" }}
+              className="size-8 rounded-full object-cover"
             />
-            <span style={{ marginLeft: '6px', fontSize: '18px' }}>
+            <span className="ml-2 text-lg font-medium">
               {userProfile ? `${userProfile.firstName} ${userProfile.lastName}` : 'Đang tải...'}
             </span>
           </div>
@@ -66,87 +65,87 @@ function LeftSidebar() {
       </div>
 
       {/* Danh sách liên kết */}
-      <ul className="list-unstyled">
-        <li className="mb-2">
+      <ul className="space-y-2 pl-0 font-medium">
+        <li>
           <Link
             to="/friends"
-            className="text-dark text-decoration-none d-flex align-items-center gap-2 sidebar-item"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-900 no-underline"
             aria-label="Xem danh sách bạn bè"
           >
             <img
               src="/img/icons/friend.png"
               alt="Biểu tượng bạn bè"
-              className="action-icon"
+              className="w-6 h-6"
             />
             <span>Bạn bè</span>
           </Link>
         </li>
-        <li className="mb-2">
+        <li>
           <Link
             to="/groups"
-            className="text-dark text-decoration-none d-flex align-items-center gap-2 sidebar-item"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-900 no-underline"
             aria-label="Xem nhóm"
           >
             <img
               src="/img/icons/groups.png"
               alt="Biểu tượng nhóm"
-              className="action-icon"
+              className="w-6 h-6"
             />
             <span>Nhóm</span>
           </Link>
         </li>
-        <li className="mb-2">
+        <li>
           <Link
             to="/marketplace"
-            className="text-dark text-decoration-none d-flex align-items-center gap-2 sidebar-item"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-900 no-underline"
             aria-label="Xem marketplace"
           >
             <img
               src="/img/icons/market.png"
               alt="Biểu tượng marketplace"
-              className="action-icon"
+              className="w-6 h-6"
             />
             <span>Marketplace</span>
           </Link>
         </li>
-        <li className="mb-2">
+        <li>
           <Link
             to="/watch"
-            className="text-dark text-decoration-none d-flex align-items-center gap-2 sidebar-item"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-900 no-underline"
             aria-label="Xem video"
           >
             <img
               src="/img/icons/reel.png"
               alt="Biểu tượng video"
-              className="action-icon"
+              className="w-6 h-6"
             />
             <span>Watch</span>
           </Link>
         </li>
-        <li className="mb-2">
+        <li>
           <Link
             to="/memories"
-            className="text-dark text-decoration-none d-flex align-items-center gap-2 sidebar-item"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-900 no-underline"
             aria-label="Xem kỷ niệm"
           >
             <img
               src="/img/icons/memories.png"
               alt="Biểu tượng kỷ niệm"
-              className="action-icon"
+              className="w-6 h-6"
             />
             <span>Kỷ niệm</span>
           </Link>
         </li>
-        <li className="mb-2">
+        <li>
           <Link
             to="/more"
-            className="text-dark text-decoration-none d-flex align-items-center gap-2 sidebar-item"
+            className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-900 no-underline"
             aria-label="Xem thêm"
           >
             <img
               src="/img/icons/plus-sign.png"
               alt="Biểu tượng xem thêm"
-              className="action-icon"
+              className="w-6 h-6"
             />
             <span>Xem thêm</span>
           </Link>

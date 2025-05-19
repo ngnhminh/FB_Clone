@@ -6,7 +6,6 @@ import LeftSidebar from '../../components/LeftSidebar';
 import RightSidebar from '../../components/RightSidebar';
 import { useUser } from '../../contexts/UserContext';
 import { useToast } from '../../context/ToastContext';
-import './SearchResults.css';
 
 /**
  * Trang hiển thị kết quả tìm kiếm bài viết
@@ -79,7 +78,7 @@ const SearchResults = () => {
 
         {/* Nội dung chính */}
         <div className="col-6 offset-3">
-          <div className="search-results-container">
+          <div className="p-4">
             <h3 className="mb-4">Kết quả tìm kiếm cho: "{query}"</h3>
 
             {/* Hiển thị trạng thái đang tải */}

@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useUser } from '../contexts/UserContext';
-import PostForm from '../components/Post/PostForm';
-import PostList from '../components/Post/PostList';
-import LeftSidebar from '../components/LeftSidebar';
-import RightSidebar from '../components/RightSidebar';
-import { API_ENDPOINTS } from '../config/api';
+import React, { useState, useEffect } from "react";
+import { useUser } from "../contexts/UserContext";
+import PostForm from "../components/Post/PostForm";
+import PostList from "../components/Post/PostList";
+import LeftSidebar from "../components/LeftSidebar";
+import RightSidebar from "../components/RightSidebar";
+import Stories from "../components/Stories/Stories";
+import { API_ENDPOINTS } from "../config/api";
 
 /**
  * Trang chủ hiển thị danh sách bài đăng
@@ -31,21 +32,26 @@ const Home = () => {
           return; // Chỉ return thay vì chuyển hướng
         }
 
-        const response = await fetch(`${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.POSTS}?userId=${currentUser.id}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+        const response = await fetch(
+          `${API_ENDPOINTS.BASE_URL}${API_ENDPOINTS.POSTS}?userId=${currentUser.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+            },
           }
-        });
+        );
 
         if (response.ok) {
           const data = await response.json();
           // Đảm bảo data là một mảng và lọc ra các bài đăng hợp lệ
-          setPosts(Array.isArray(data) ? data.filter(post => post && post.id) : []);
+          setPosts(
+            Array.isArray(data) ? data.filter((post) => post && post.id) : []
+          );
         } else {
           setPosts([]);
         }
       } catch (error) {
-        console.error('Lỗi khi lấy bài đăng:', error);
+        console.error("Lỗi khi lấy bài đăng:", error);
         setPosts([]);
       } finally {
         setLoading(false);
@@ -57,13 +63,20 @@ const Home = () => {
 
   // Hiển thị thông báo nếu chưa đăng nhập
   if (!currentUser) {
-    return <div className="alert alert-warning m-3">Vui lòng đăng nhập để tiếp tục</div>;
+    return (
+      <div className="alert alert-warning m-3">
+        Vui lòng đăng nhập để tiếp tục
+      </div>
+    );
   }
 
   // Hiển thị trạng thái đang tải
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
         <div className="spinner-border text-primary" role="status">
           <span className="visually-hidden">Đang tải...</span>
         </div>
@@ -73,12 +86,12 @@ const Home = () => {
 
   return (
     <div className="container-fluid">
-      <div className="row" style={{ paddingTop: '60px' }}>
+      <div className="row bg-gray-100" style={{ paddingTop: "60px" }}>
         {/* Thanh bên trái */}
         <LeftSidebar />
 
         {/* Nội dung chính */}
-        <div className="col-6 offset-3">
+        <div className="col-5 offset-3 mx-auto pt-3">
           {currentUser && (
             <>
               {/* Form tạo bài đăng mới */}
@@ -86,6 +99,9 @@ const Home = () => {
                 onAddPost={(newPost) => setPosts([newPost, ...posts])}
                 currentUser={currentUser}
               />
+              
+              {/* Stories */}
+              <Stories />
 
               {/* Danh sách bài đăng */}
               <PostList

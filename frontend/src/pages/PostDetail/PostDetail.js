@@ -10,7 +10,6 @@ import SharePostModal from '../../components/Post/SharePostModal';
 import PostOptionsMenu from '../../components/Post/PostOptionsMenu';
 import ImageViewerModal from '../../components/Post/ImageViewerModal';
 import { Modal, Button } from 'react-bootstrap';
-import './PostDetail.css';
 import CommentSuggestions from '../../components/CommentSuggestions';
 
 const PostDetail = () => {
@@ -532,16 +531,12 @@ const PostDetail = () => {
     const [hasScrolled, setHasScrolled] = useState(false);
     const commentRef = isHighlightedComment ? highlightedCommentRef : null;
 
-    const MAX_REPLY_DEPTH = 4; // Giới hạn độ sâu tối đa (0,1,2,3 = 4 tầng)
-    const MAX_VISIBLE_REPLIES = 0; // Mặc định không hiển thị phản hồi con
+    const MAX_REPLY_DEPTH = 4;
+    const MAX_VISIBLE_REPLIES = 0;
 
-    // Kiểm tra xem có thể reply tiếp không
     const canReply = depth < MAX_REPLY_DEPTH;
-
-    // Kiểm tra xem người dùng hiện tại có phải là chủ sở hữu bình luận không
     const isCommentOwner = currentUser?.id === comment.userId;
 
-    // Scroll to highlighted comment when it's rendered - only once
     useEffect(() => {
       if (isHighlightedComment && highlightedCommentRef.current && !hasScrolled) {
         setHasScrolled(true);
@@ -549,15 +544,12 @@ const PostDetail = () => {
         const scrollTimeout = setTimeout(() => {
           if (highlightedCommentRef.current) {
             highlightedCommentRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Auto-show reply input for highlighted comment
             setShowReplyInput(true);
           }
         }, 500);
 
         return () => clearTimeout(scrollTimeout);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleReply = async () => {
@@ -579,7 +571,6 @@ const PostDetail = () => {
       ? comment.replies
       : comment.replies?.slice(0, MAX_VISIBLE_REPLIES);
 
-    // Luôn hiển thị nút "Xem thêm phản hồi" nếu có phản hồi con
     const hasMoreReplies = comment.replies?.length > 0;
     const marginLeft = depth < MAX_REPLY_DEPTH ? `${depth * 32}px` : `${MAX_REPLY_DEPTH * 32}px`;
 
@@ -589,36 +580,34 @@ const PostDetail = () => {
 
     return (
       <div className="comment-thread" style={{ marginLeft }} ref={commentRef}>
-        <div className="comment-main d-flex gap-2 mb-2">
+        <div className="flex gap-2 mb-2">
           <MemoizedAvatar
             src={getFullImageUrl(comment.user?.avatar)}
             alt="User"
-            className="rounded-circle"
-            style={{ width: '32px', height: '32px', objectFit: 'cover', cursor: 'pointer' }}
+            className="w-8 h-8 rounded-full object-cover cursor-pointer"
             onClick={() => handleAvatarClick(comment.user?.id)}
           />
-          <div className="flex-grow-1">
-            <div className="bg-light p-2 rounded comment-text">
+          <div className="flex-1">
+            <div className="bg-gray-50 p-3 rounded-lg">
               <div
-                className="fw-bold"
-                style={{ cursor: 'pointer' }}
+                className="font-semibold cursor-pointer"
                 onClick={() => handleAvatarClick(comment.user?.id)}
               >
                 {comment.user ? `${comment.user.firstName} ${comment.user.lastName}` : 'Unknown User'}
               </div>
-              {comment.content}
+              <div className="text-gray-800">{comment.content}</div>
             </div>
 
-            <div className="comment-actions mt-1 d-flex align-items-center">
+            <div className="flex items-center mt-1">
               <button
-                className={`btn btn-link btn-sm p-0 ${comment.likes?.includes(currentUser.id) ? 'text-primary' : 'text-secondary'} me-2`}
+                className={`text-sm ${comment.likes?.includes(currentUser.id) ? 'text-blue-500' : 'text-gray-500'} hover:text-blue-600 mr-2`}
                 onClick={() => handleLikeComment(comment.id)}
               >
                 Thích {comment.likes?.length > 0 && `(${comment.likes.length})`}
               </button>
               {canReply && (
                 <button
-                  className="btn btn-link btn-sm p-0 text-secondary me-2"
+                  className="text-sm text-gray-500 hover:text-gray-600 mr-2"
                   onClick={() => setShowReplyInput(!showReplyInput)}
                 >
                   Phản hồi
@@ -626,30 +615,29 @@ const PostDetail = () => {
               )}
               {isCommentOwner && (
                 <button
-                  className="btn btn-link btn-sm p-0 text-danger me-2"
+                  className="text-sm text-red-500 hover:text-red-600 mr-2"
                   onClick={() => handleDeleteComment(comment.id)}
                 >
                   <i className="bi bi-trash-fill"></i> Xóa
                 </button>
               )}
-              <small className="text-muted ms-auto">
+              <span className="text-xs text-gray-500 ml-auto">
                 {new Date(comment.createdAt).toLocaleString()}
-              </small>
+              </span>
             </div>
 
             {showReplyInput && (
-              <div className="reply-input-container d-flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2">
                 <MemoizedAvatar
                   src={getFullImageUrl(userProfile?.avatar)}
                   alt="Current user"
-                  className="rounded-circle"
-                  style={{ width: '28px', height: '28px', objectFit: 'cover' }}
+                  className="w-7 h-7 rounded-full object-cover"
                 />
-                <div className="flex-grow-1">
-                  <div className="position-relative">
+                <div className="flex-1">
+                  <div className="relative">
                     <input
                       type="text"
-                      className="form-control form-control-sm rounded-pill"
+                      className="w-full rounded-full border border-gray-300 px-4 py-1 text-sm focus:outline-none focus:border-blue-500"
                       placeholder={`Phản hồi ${comment.user?.firstName}...`}
                       value={replyContent}
                       onChange={(e) => setReplyContent(e.target.value)}
@@ -661,13 +649,12 @@ const PostDetail = () => {
                       }}
                     />
                     <button
-                      className="btn btn-link text-primary position-absolute"
-                      style={{ right: '8px', top: '50%', transform: 'translateY(-50%)' }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-500 hover:text-blue-600"
                       onClick={handleReply}
                       disabled={isCommentLoading || !replyContent.trim()}
                     >
                       {isCommentLoading ? (
-                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                       ) : (
                         <i className="bi bi-send-fill"></i>
                       )}
@@ -682,19 +669,19 @@ const PostDetail = () => {
         {hasMoreReplies && (
           <>
             {!showAllReplies && (
-              <div className="view-replies-wrapper">
+              <div className="mb-2">
                 <button
-                  className="btn btn-link btn-sm text-primary mb-2 view-replies-btn"
+                  className="text-sm text-blue-500 hover:text-blue-600"
                   onClick={() => setShowAllReplies(true)}
                 >
-                  <span className="view-replies-icon"><i className="bi bi-arrow-return-right"></i></span>
-                  <span className="view-replies-text">Xem {comment.replies.length} phản hồi</span>
+                  <i className="bi bi-arrow-return-right mr-1"></i>
+                  Xem {comment.replies.length} phản hồi
                 </button>
               </div>
             )}
 
             {showAllReplies && (
-              <div className="replies-container">
+              <div className="space-y-2">
                 {displayedReplies?.map((reply, index) => (
                   <Comment
                     key={reply.id || index}
@@ -706,10 +693,10 @@ const PostDetail = () => {
 
                 {showAllReplies && comment.replies?.length > 0 && (
                   <button
-                    className="btn btn-link btn-sm text-primary"
+                    className="text-sm text-blue-500 hover:text-blue-600"
                     onClick={() => setShowAllReplies(false)}
                   >
-                    <i className="bi bi-chevron-up me-1"></i>
+                    <i className="bi bi-chevron-up mr-1"></i>
                     Ẩn phản hồi
                   </button>
                 )}
@@ -724,12 +711,10 @@ const PostDetail = () => {
   if (loading || !currentUser) {
     return (
       <div className="container-fluid">
-        <div className="row" style={{ paddingTop: '60px' }}>
+        <div className="row pt-16">
           <LeftSidebar />
-          <div className="col-6 offset-3 d-flex justify-content-center align-items-center" style={{ minHeight: '300px' }}>
-            <div className="spinner-border text-primary" role="status">
-              <span className="visually-hidden">Đang tải...</span>
-            </div>
+          <div className="col-6 offset-3 flex justify-center items-center min-h-[300px]">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
           </div>
           <RightSidebar />
         </div>
@@ -740,23 +725,24 @@ const PostDetail = () => {
   if (error || !post) {
     return (
       <div className="container-fluid">
-        <div className="row" style={{ paddingTop: '60px' }}>
+        <div className="row pt-16">
           <LeftSidebar />
           <div className="col-6 offset-3">
-            <div className="card">
-              <div className="card-body">
-                <div className="alert alert-danger">
-                  {error || 'Không tìm thấy bài viết'}
-                </div>
-                <p className="text-muted">
-                  {error && error.includes('403')
-                    ? 'Bạn không có quyền xem bài viết này. Đây có thể là bài viết riêng tư của người dùng khác.'
-                    : 'Bài viết bạn đang tìm kiếm có thể đã bị xóa hoặc tạm thời không khả dụng.'}
-                </p>
-                <button className="btn btn-primary" onClick={() => navigate('/')}>
-                  Quay lại trang chủ
-                </button>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                {error || 'Không tìm thấy bài viết'}
               </div>
+              <p className="text-gray-600 mt-4">
+                {error && error.includes('403')
+                  ? 'Bạn không có quyền xem bài viết này. Đây có thể là bài viết riêng tư của người dùng khác.'
+                  : 'Bài viết bạn đang tìm kiếm có thể đã bị xóa hoặc tạm thời không khả dụng.'}
+              </p>
+              <button 
+                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                onClick={() => navigate('/')}
+              >
+                Quay lại trang chủ
+              </button>
             </div>
           </div>
           <RightSidebar />
@@ -770,291 +756,269 @@ const PostDetail = () => {
 
   return (
     <div className="container-fluid">
-      <div className="row" style={{ paddingTop: '60px' }}>
+      <div className="row pt-16">
         <LeftSidebar />
         <div className="col-6 offset-3">
-          <div className="post-detail-container">
-            <div className="card">
-              <div className="card-body">
-                {/* Post Header */}
-                <div className="d-flex align-items-center gap-2 mb-3">
-                  <MemoizedAvatar
-                    src={getFullImageUrl(post.user?.avatar)}
-                    alt="User"
-                    className="rounded-circle"
-                    style={{ width: '40px', height: '40px', objectFit: 'cover', cursor: 'pointer' }}
-                    onClick={() => handleAvatarClick(post.user?.id)}
-                  />
-                  <div className="flex-grow-1">
-                    <div
-                      className="fw-bold"
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleAvatarClick(post.user?.id)}
-                    >
-                      {post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Unknown User'}
-                    </div>
-                    <div className="d-flex align-items-center">
-                      <small className="text-secondary me-2">
-                        {new Date(post.createdAt).toLocaleString()}
-                      </small>
-                      <small className="text-secondary d-flex align-items-center">
-                        <i className={`bi ${post.privacy === 'PUBLIC' ? 'bi-globe' : 'bi-lock-fill'} me-1`}></i>
-                        <span>{post.privacy === 'PUBLIC' ? 'Công khai' : 'Riêng tư'}</span>
-                      </small>
-                    </div>
-                  </div>
-                  {isPostOwner && (
-                    <PostOptionsMenu
-                      post={post}
-                      onDelete={handleDeletePost}
-                      onEdit={(content, privacy) => handleEditPost(content, privacy)}
-                      onEditWithMedia={(content, privacy, media, keepImages, keepVideos) =>
-                        handleEditPostWithMedia(content, privacy, media, keepImages, keepVideos)
-                      }
-                    />
-                  )}
+          <div className="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+            <div className="flex items-center gap-4 mb-4">
+              <MemoizedAvatar
+                src={getFullImageUrl(post.user?.avatar)}
+                alt="User"
+                className="w-14 h-14 rounded-full object-cover cursor-pointer"
+                onClick={() => handleAvatarClick(post.user?.id)}
+              />
+              <div className="flex-1">
+                <div
+                  className="text-lg font-semibold text-blue-700 cursor-pointer"
+                  onClick={() => handleAvatarClick(post.user?.id)}
+                >
+                  {post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Unknown User'}
                 </div>
+                <div className="text-gray-500 text-sm">
+                  {new Date(post.createdAt).toLocaleString()}
+                </div>
+              </div>
+              {isPostOwner && (
+                <PostOptionsMenu
+                  post={post}
+                  onDelete={handleDeletePost}
+                  onEdit={(content, privacy) => handleEditPost(content, privacy)}
+                  onEditWithMedia={(content, privacy, media, keepImages, keepVideos) =>
+                    handleEditPostWithMedia(content, privacy, media, keepImages, keepVideos)
+                  }
+                />
+              )}
+            </div>
 
-                {/* Post Content */}
-                <div className="post-content mb-3">
-                  {isSharedPost ? (
-                    <div className="shared-post p-3">
-                      <div className="shared-comment mb-3">
-                        <p>{post.content}</p>
+            <div className="mb-4 text-base">
+              {isSharedPost ? (
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <div className="mb-3">
+                    <p>{post.content}</p>
+                  </div>
+                  {post.originalPost ? (
+                    <div className="bg-white p-4 rounded-lg border">
+                      <div className="flex items-center gap-2 mb-2">
+                        <img
+                          src={getFullImageUrl(post.originalPost.user?.avatar)}
+                          alt="Original author"
+                          className="w-8 h-8 rounded-full object-cover cursor-pointer"
+                          onClick={() => handleAvatarClick(post.originalPost.user?.id)}
+                        />
+                        <div>
+                          <div
+                            className="font-semibold cursor-pointer"
+                            onClick={() => handleAvatarClick(post.originalPost.user?.id)}
+                          >
+                            {post.originalPost.user ? `${post.originalPost.user.firstName} ${post.originalPost.user.lastName}` : 'Unknown User'}
+                          </div>
+                          <div className="flex items-center">
+                            <span className="text-gray-500 text-sm mr-2">
+                              {new Date(post.originalPost.createdAt).toLocaleString()}
+                            </span>
+                            <span className="text-gray-500 text-sm flex items-center">
+                              <i className={`bi ${post.originalPost.privacy === 'PUBLIC' ? 'bi-globe' : 'bi-lock-fill'} mr-1`}></i>
+                              <span>{post.originalPost.privacy === 'PUBLIC' ? 'Công khai' : 'Riêng tư'}</span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      {post.originalPost ? (
-                        <div className="original-post">
-                          <div className="d-flex align-items-center gap-2 mb-2">
-                            <img
-                              src={getFullImageUrl(post.originalPost.user?.avatar)}
-                              alt="Original author"
-                              className="rounded-circle"
-                              style={{ width: '32px', height: '32px', objectFit: 'cover', cursor: 'pointer' }}
-                              onClick={() => handleAvatarClick(post.originalPost.user?.id)}
-                            />
-                            <div>
+
+                      <div>
+                        <p>{post.originalPost.content}</p>
+
+                        {post.originalPost.images?.length > 0 && (
+                          <div className="grid grid-cols-2 gap-2 mb-3">
+                            {post.originalPost.images.map((image, index) => (
                               <div
-                                className="fw-bold"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleAvatarClick(post.originalPost.user?.id)}
+                                key={index}
+                                className="relative cursor-pointer"
+                                onClick={() => {
+                                  setSelectedImageIndex(index);
+                                  setShowImageViewer(true);
+                                }}
                               >
-                                {post.originalPost.user ? `${post.originalPost.user.firstName} ${post.originalPost.user.lastName}` : 'Unknown User'}
+                                <MemoizedPostImage
+                                  src={getFullImageUrl(image)}
+                                  alt="Post content"
+                                  className="w-full h-48 object-cover rounded"
+                                />
                               </div>
-                              <div className="d-flex align-items-center">
-                                <small className="text-secondary me-2">
-                                  {new Date(post.originalPost.createdAt).toLocaleString()}
-                                </small>
-                                <small className="text-secondary d-flex align-items-center">
-                                  <i className={`bi ${post.originalPost.privacy === 'PUBLIC' ? 'bi-globe' : 'bi-lock-fill'} me-1`}></i>
-                                  <span>{post.originalPost.privacy === 'PUBLIC' ? 'Công khai' : 'Riêng tư'}</span>
-                                </small>
-                              </div>
-                            </div>
+                            ))}
                           </div>
+                        )}
 
-                          <div className="original-post-content">
-                            <p>{post.originalPost.content}</p>
-
-                            {post.originalPost.images?.length > 0 && (
-                              <div className="media-grid mb-3" data-count={post.originalPost.images.length}>
-                                {post.originalPost.images.map((image, index) => (
-                                  <div
-                                    key={index}
-                                    className="media-item"
-                                    onClick={() => {
-                                      setSelectedImageIndex(index);
-                                      setShowImageViewer(true);
-                                    }}
-                                    style={{ cursor: 'pointer' }}
-                                  >
-                                    <MemoizedPostImage
-                                      src={getFullImageUrl(image)}
-                                      alt="Post content"
-                                      className="img-fluid rounded"
-                                    />
-                                  </div>
-                                ))}
+                        {post.originalPost.videos?.length > 0 && (
+                          <div className="grid grid-cols-2 gap-2 mb-3">
+                            {post.originalPost.videos.map((video, index) => (
+                              <div key={index} className="relative">
+                                <video
+                                  src={getFullImageUrl(video)}
+                                  controls
+                                  className="w-full h-48 object-cover rounded"
+                                />
                               </div>
-                            )}
-
-                            {post.originalPost.videos?.length > 0 && (
-                              <div className="media-grid mb-3" data-count={post.originalPost.videos.length}>
-                                {post.originalPost.videos.map((video, index) => (
-                                  <div key={index} className="media-item">
-                                    <video
-                                      src={getFullImageUrl(video)}
-                                      controls
-                                      className="img-fluid rounded"
-                                    />
-                                  </div>
-                                ))}
-                              </div>
-                            )}
+                            ))}
                           </div>
-                        </div>
-                      ) : (
-                        <div className="alert alert-warning">
-                          Original post no longer exists
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   ) : (
-                    <>
-                      <p>{post.content}</p>
-                      {post.images?.length > 0 && (
-                        <div className="media-grid mb-3" data-count={post.images.length}>
-                          {post.images.map((image, index) => (
-                            <div
-                              key={index}
-                              className="media-item"
-                              onClick={() => {
-                                setSelectedImageIndex(index);
-                                setShowImageViewer(true);
-                              }}
-                              style={{ cursor: 'pointer' }}
-                            >
-                              <MemoizedPostImage
-                                src={getFullImageUrl(image)}
-                                alt="Post content"
-                                className="img-fluid rounded"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {post.videos?.length > 0 && (
-                        <div className="media-grid mb-3" data-count={post.videos.length}>
-                          {post.videos.map((video, index) => (
-                            <div key={index} className="media-item">
-                              <video
-                                src={getFullImageUrl(video)}
-                                controls
-                                className="img-fluid rounded"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </>
+                    <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded">
+                      Original post no longer exists
+                    </div>
                   )}
                 </div>
-
-                {/* Post Stats */}
-                <div className="post-stats d-flex justify-content-between mb-3">
-                  <div>
-                    {post.likes?.length > 0 && (
-                      <div className="likes-count">
-                        <i className="bi bi-hand-thumbs-up-fill text-primary me-1"></i>
-                        <span>{post.likes.length} lượt thích</span>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    {post.comments?.length > 0 && (
-                      <div className="comments-count">
-                        <span>{post.comments.length} bình luận</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Post Actions */}
-                <div className="post-actions d-flex gap-3 mb-3 border-top border-bottom py-2">
-                  <button
-                    className={`btn btn-link like-button flex-grow-1 ${post.likes?.includes(currentUser.id) ? 'text-primary' : 'text-secondary'}`}
-                    onClick={handleLike}
-                  >
-                    <img
-                      src={post.likes?.includes(currentUser.id) ? "/img/icons/liked.png" : "/img/icons/like.png"}
-                      alt="Thích"
-                      className="action-icon me-1"
-                    />
-                    <span>Thích</span>
-                  </button>
-                  <button className="btn btn-link text-secondary flex-grow-1">
-                    <img
-                      src="/img/icons/comment.png"
-                      alt="Bình luận"
-                      className="action-icon me-1"
-                    />
-                    <span>Bình luận</span>
-                  </button>
-                  <button
-                    className="btn btn-link text-secondary flex-grow-1"
-                    onClick={handleShareClick}
-                  >
-                    <img
-                      src="/img/icons/share.png"
-                      alt="Chia sẻ"
-                      className="action-icon me-1"
-                    />
-                    <span>Chia sẻ</span>
-                  </button>
-                </div>
-
-                {/* Comments Section */}
-                <div className="comments-section">
-                  {/* Add Comment Input */}
-                  <div className="d-flex gap-2 align-items-center mb-4">
-
-                    <div className="flex-grow-1 position-relative">
-                      <div className="d-flex align-items-center">
-                        <MemoizedAvatar
-                          src={getFullImageUrl(userProfile?.avatar)}
-                          alt="Người dùng hiện tại"
-                          className="rounded-circle"
-                          style={{ width: '32px', height: '32px', objectFit: 'cover', marginRight: '8px'}}
-                        />
-                        <input
-                          type="text"
-                          className="form-control rounded-pill comment-input"
-                          placeholder="Viết bình luận..."
-                          value={commentInput}
-                          onChange={(e) => {
-                            isUserTyping.current = true;
-                            setCommentInput(e.target.value);
+              ) : (
+                <>
+                  <p>{post.content}</p>
+                  {post.images?.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      {post.images.map((image, index) => (
+                        <div
+                          key={index}
+                          className="relative cursor-pointer"
+                          onClick={() => {
+                            setSelectedImageIndex(index);
+                            setShowImageViewer(true);
                           }}
-                          onFocus={() => {
-                            isUserTyping.current = true;
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') {
-                              e.preventDefault();
-                              handleComment(commentInput);
-                            }
-                          }}
-                        />
-                        <button
-                          className="btn btn-link text-primary ms-2"
-                          onClick={() => handleComment(commentInput)}
-                          disabled={isLoading.comment_new || !commentInput?.trim()}
                         >
-                          <i className="bi bi-send-fill"></i>
-                        </button>
-                      </div>
-
-                      {/* Thêm component gợi ý bình luận */}
-                      <CommentSuggestions
-                        postContent={post?.content}
-                        imageUrl={post?.images && post.images.length > 0 ? post.images[0] : null}
-                        onSelectSuggestion={(suggestion) => setCommentInput(suggestion)}
-                      />
+                          <MemoizedPostImage
+                            src={getFullImageUrl(image)}
+                            alt="Post content"
+                            className="w-full h-48 object-cover rounded"
+                          />
+                        </div>
+                      ))}
                     </div>
+                  )}
+                  {post.videos?.length > 0 && (
+                    <div className="grid grid-cols-2 gap-2 mb-3">
+                      {post.videos.map((video, index) => (
+                        <div key={index} className="relative">
+                          <video
+                            src={getFullImageUrl(video)}
+                            controls
+                            className="w-full h-48 object-cover rounded"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="flex gap-4 mb-4">
+              <div>
+                {post.likes?.length > 0 && (
+                  <div className="text-gray-600">
+                    <i className="bi bi-hand-thumbs-up-fill text-blue-500 mr-1"></i>
+                    <span>{post.likes.length} lượt thích</span>
+                  </div>
+                )}
+              </div>
+              <div>
+                {post.comments?.length > 0 && (
+                  <div className="text-gray-600">
+                    <span>{post.comments.length} bình luận</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex gap-3 mb-3 border-t border-b py-2">
+              <button
+                className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-colors ${
+                  post.likes?.includes(currentUser.id) 
+                    ? 'text-blue-500 hover:bg-blue-50' 
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+                onClick={handleLike}
+              >
+                <img
+                  src={post.likes?.includes(currentUser.id) ? "/img/icons/liked.png" : "/img/icons/like.png"}
+                  alt="Thích"
+                  className="w-5 h-5"
+                />
+                <span>Thích</span>
+              </button>
+              <button className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-50">
+                <img
+                  src="/img/icons/comment.png"
+                  alt="Bình luận"
+                  className="w-5 h-5"
+                />
+                <span>Bình luận</span>
+              </button>
+              <button
+                className="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-50"
+                onClick={handleShareClick}
+              >
+                <img
+                  src="/img/icons/share.png"
+                  alt="Chia sẻ"
+                  className="w-5 h-5"
+                />
+                <span>Chia sẻ</span>
+              </button>
+            </div>
+
+            <div className="mt-4">
+              <div className="flex gap-2 items-center mb-4">
+                <div className="flex-1 relative">
+                  <div className="flex items-center">
+                    <MemoizedAvatar
+                      src={getFullImageUrl(userProfile?.avatar)}
+                      alt="Người dùng hiện tại"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
+                    <input
+                      type="text"
+                      className="flex-1 rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:border-blue-500"
+                      placeholder="Viết bình luận..."
+                      value={commentInput}
+                      onChange={(e) => {
+                        isUserTyping.current = true;
+                        setCommentInput(e.target.value);
+                      }}
+                      onFocus={() => {
+                        isUserTyping.current = true;
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleComment(commentInput);
+                        }
+                      }}
+                    />
+                    <button
+                      className="ml-2 text-blue-500 hover:text-blue-600"
+                      onClick={() => handleComment(commentInput)}
+                      disabled={isLoading.comment_new || !commentInput?.trim()}
+                    >
+                      <i className="bi bi-send-fill"></i>
+                    </button>
                   </div>
 
-                  {/* Comments List */}
-                  <div className="comments-list">
-                    {post.comments?.map((comment, index) => (
-                      !comment.parentId && (
-                        <Comment
-                          key={comment.id || index}
-                          comment={comment}
-                          postId={post.id}
-                        />
-                      )
-                    ))}
-                  </div>
+                  <CommentSuggestions
+                    postContent={post?.content}
+                    imageUrl={post?.images && post.images.length > 0 ? post.images[0] : null}
+                    onSelectSuggestion={(suggestion) => setCommentInput(suggestion)}
+                  />
                 </div>
+              </div>
+
+              <div className="space-y-4">
+                {post.comments?.map((comment, index) => (
+                  !comment.parentId && (
+                    <Comment
+                      key={comment.id || index}
+                      comment={comment}
+                      postId={post.id}
+                    />
+                  )
+                ))}
               </div>
             </div>
           </div>
@@ -1062,7 +1026,6 @@ const PostDetail = () => {
         <RightSidebar />
       </div>
 
-      {/* Share Modal */}
       {showShareModal && (
         <SharePostModal
           show={showShareModal}
@@ -1072,10 +1035,9 @@ const PostDetail = () => {
         />
       )}
 
-      {/* Image Viewer Modal - Only render when needed */}
       {showImageViewer && post && (
         <ImageViewerModal
-          key="image-viewer-modal" // Add a key to ensure proper mounting/unmounting
+          key="image-viewer-modal"
           show={showImageViewer}
           onHide={() => setShowImageViewer(false)}
           images={post.isShared && post.originalPost ? post.originalPost.images : post.images}
@@ -1084,14 +1046,13 @@ const PostDetail = () => {
         />
       )}
 
-      {/* Thêm modal xác nhận xóa bài viết */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận xóa</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>Bạn có chắc chắn muốn xóa bài viết này?</p>
-          <p className="text-danger">Lưu ý: Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan đến bài viết này.</p>
+          <p className="text-red-500">Lưu ý: Hành động này không thể hoàn tác và sẽ xóa tất cả dữ liệu liên quan đến bài viết này.</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
@@ -1103,14 +1064,13 @@ const PostDetail = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Delete Comment Confirmation Modal */}
       <Modal show={showDeleteCommentModal} onHide={() => setShowDeleteCommentModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Xác nhận xóa bình luận</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>Bạn có chắc chắn muốn xóa bình luận này?</p>
-          <p className="text-danger">Lưu ý: Hành động này không thể hoàn tác.</p>
+          <p className="text-red-500">Lưu ý: Hành động này không thể hoàn tác.</p>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteCommentModal(false)}>

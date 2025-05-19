@@ -16,11 +16,13 @@ const Admin = () => {
   }, [navigate]);
 
   return (
-    <Routes>
-      <Route path="/" element={<AdminDashboard />} />
-      <Route path="/manage-posts" element={<ManagePosts />} />
-      <Route path="/manage-users" element={<ManageUsers />} />
-    </Routes>
+    <div className="min-h-screen bg-gray-100">
+      <Routes>
+        <Route path="/" element={<AdminDashboard />} />
+        <Route path="/manage-posts" element={<ManagePosts />} />
+        <Route path="/manage-users" element={<ManageUsers />} />
+      </Routes>
+    </div>
   );
 };
 
